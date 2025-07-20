@@ -1,0 +1,114 @@
+body {
+    font-family: 'Segoe UI', sans-serif;
+    line-height: 1.6;
+    background: #f4f4f9;
+    margin: 0;
+    padding: 2rem;
+  }
+
+  h1, h2 {
+    color: #333;
+  }
+
+  .section {
+    margin-bottom: 3rem;
+    background: #fff;
+    padding: 2rem;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+  }
+
+  .demo {
+    margin-top: 1rem;
+    padding: 1rem;
+    background: #f9f9ff;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+  }
+
+  .code {
+    background: #272822;
+    color: #f8f8f2;
+    padding: 1rem;
+    border-radius: 8px;
+    font-family: monospace;
+    white-space: pre;
+    overflow-x: auto;
+    margin-top: 1rem;
+  }
+
+  /* Beispiele */
+  .button {
+    background-color: steelblue;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    border-radius: 6px;
+  }
+  .button:hover {
+    background-color: crimson;
+  }
+
+  .element {
+    width: 100px;
+    height: 100px;
+    background-color: teal;
+    transition: width 0.5s, height 0.5s, background-color 0.5s;
+  }
+  .element:hover {
+    width: 150px;
+    height: 150px;
+    background-color: tomato;
+  }
+
+  .box {
+    width: 100px;
+    height: 100px;
+    background-color: royalblue;
+    animation: slide 2s ease-in-out infinite alternate;
+  }
+
+  @keyframes slide {
+    from { transform: translateX(0); }
+    to { transform: translateX(200px); }
+  }
+
+  .pulse {
+    width: 100px;
+    height: 100px;
+    animation: colorPulse 3s linear infinite;
+  }
+
+  @keyframes colorPulse {
+    0%   { background-color: blue; }
+    50%  { background-color: green; }
+    100% { background-color: red; }
+  }
+
+  .card {
+    background: #eee;
+    padding: 2rem;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    animation: fadeInUp 0.8s ease-out;
+    max-width: 200px;
+  }
+
+  .card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+  }
+
+  @keyframes fadeInUp {
+    from {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }

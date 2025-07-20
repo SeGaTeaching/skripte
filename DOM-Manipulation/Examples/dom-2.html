@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="de">
+  <head>
+    <meta charset="UTF-8" />
+    <title>DOM Tag 2 – Event- & Elementmanipulation</title>
+    <link rel="stylesheet" href="style.css" />
+    <style>
+      body {
+        font-family: "Segoe UI", sans-serif;
+        margin: 2rem;
+        background-color: #f9f9f9;
+        color: #333;
+      }
+      h1 {
+        color: #1e88e5;
+        text-align: center;
+      }
+      section {
+        background: #fff;
+        border: 1px solid #ddd;
+        padding: 1.5rem;
+        margin-bottom: 2rem;
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+      }
+      button,
+      input[type="submit"] {
+        background: #1e88e5;
+        color: white;
+        border: none;
+        padding: 0.5rem 1rem;
+        border-radius: 4px;
+        cursor: pointer;
+        transition: background 0.3s;
+      }
+      button:hover,
+      input[type="submit"]:hover {
+        background: #1565c0;
+      }
+      input,
+      select {
+        padding: 0.4rem;
+        margin: 0.5rem 0;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+      }
+      ul {
+        padding-left: 1.5rem;
+      }
+      li {
+        margin-bottom: 0.5rem;
+      }
+      .remove {
+        background: crimson;
+        margin-left: 1rem;
+      }
+      .remove:hover {
+        background: darkred;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>DOM Tag 2 – Dynamische DOM-Manipulation & Events</h1>
+
+    <section>
+      <h2>1. Elemente dynamisch erstellen</h2>
+      <button id="add-box">Box hinzufügen</button>
+      <div id="box-container"></div>
+    </section>
+
+    <section>
+      <h2>2. Eventarten demonstrieren</h2>
+      <label for="text-input">Text-Eingabe:</label>
+      <input type="text" id="text-input" placeholder="Tasteneingabe test" />
+
+      <button id="hover-button">Fahre mit der Maus hierüber</button>
+
+      <form id="event-form">
+        <label for="email">E-Mail:</label>
+        <input type="email" name="email" required placeholder="E-Mail" />
+        <input type="submit" value="Formular absenden" />
+      </form>
+    </section>
+
+    <section>
+      <h2>3. Delegation & Traversal</h2>
+      <ul id="task-list">
+        <li>Aufgabe 1 <button class="remove">Entfernen</button></li>
+        <li>Aufgabe 2 <button class="remove">Entfernen</button></li>
+      </ul>
+      <button id="add-task">Neue Aufgabe</button>
+    </section>
+
+    <section>
+      <h2>4. Formulare & Validierung</h2>
+      <form id="registration">
+        <label for="user">Benutzername:</label>
+        <input type="text" name="user" id="user" required minlength="4" />
+
+        <label for="password">Passwort:</label>
+        <input type="password" name="password" id="password" required />
+
+        <input type="submit" value="Registrieren" />
+      </form>
+      <p id="form-feedback"></p>
+    </section>
+
+    <footer>
+      <hr />
+      <p style="text-align: center; font-size: 0.9rem; color: #999">
+        &copy; 2025 WebDev Training
+      </p>
+    </footer>
+
+    <script>
+      // 1. Elemente dynamisch erstellen
+      const boxBtn = document.getElementById("add-box");
+      const boxContainer = document.getElementById("box-container");
+
+      boxBtn.addEventListener("click", () => {
+        const box = document.createElement("div");
+        box.textContent = "Ich bin eine neue Box";
+        box.style.border = "1px solid black";
+        box.style.margin = "0.5rem 0";
+        box.style.padding = "1rem";
+        boxContainer.appendChild(box);
+      });
+
+      // 2. Verschiedene Events
+      const textInput = document.getElementById("text-input");
+      textInput.addEventListener("input", (e) => {
+        console.log("Eingegeben:", e.target.value);
+      });
+
+      const hoverBtn = document.getElementById("hover-button");
+      hoverBtn.addEventListener("mouseover", () => {
+        hoverBtn.textContent = "Danke fürs Hovern!";
+      });
+      hoverBtn.addEventListener("mouseout", () => {
+        hoverBtn.textContent = "Fahre mit der Maus hierüber";
+      });
+
+      const eventForm = document.getElementById("event-form");
+      eventForm.addEventListener("submit", function (e) {
+        e.preventDefault();
+        alert("Formular erfolgreich abgefangen!");
+      });
+
+      // 3. Event Delegation & Traversal
+      const taskList = document.getElementById("task-list");
+      const addTaskBtn = document.getElementById("add-task");
+
+      addTaskBtn.addEventListener("click", () => {
+        const li = document.createElement("li");
+        li.innerHTML = `Neue Aufgabe <button class="remove">Entfernen</button>`;
+        taskList.appendChild(li);
+      });
+
+      taskList.addEventListener("click", function (e) {
+        if (e.target.classList.contains("remove")) {
+          const li = e.target.closest("li");
+          li.remove();
+        }
+      });
+
+      // 4. Formulare & Validierung
+      const regForm = document.getElementById("registration");
+      const feedback = document.getElementById("form-feedback");
+
+      regForm.addEventListener("submit", function (e) {
+        e.preventDefault();
+        if (!regForm.checkValidity()) {
+          regForm.reportValidity();
+          return;
+        }
+
+        const user = regForm.elements.user.value;
+        const pass = regForm.elements.password.value;
+        feedback.textContent = `Registrierung erfolgreich für Benutzer: ${user}`;
+      });
+    </script>
+  </body>
+</html>

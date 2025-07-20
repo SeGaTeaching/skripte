@@ -1,0 +1,1049 @@
+2.0.1 Classes
+So far, we have learned several methods for creating objects in JavaScript. All of them represented the classless model.
+
+We also said that there is one more important method that was introduced to JavaScript quite late (the ECMAScript 6 standard). It’s about classes – it’s a kind of object template.
+
+But why another method for creating objects? There are two main reasons for this.
+
+The first is inheritance. You probably remember the prototypes we used to inherit methods and properties from a selected object.
+
+And even if you don't remember exactly how they worked (which wouldn't be strange), you will certainly recall that it wasn't the easiest technique.
+
+It is not very intuitive, especially at first, and to understand it well you have to spend a lot of time practicing it.
+
+In the case of classes, inheritance, at least from the notation in the code, is incomparably simpler.
+
+
+The second reason, probably even more important, for which the JavaScript class was introduced is even more trivial.
+
+Classes are used in the vast majority of object-oriented languages. So it's easier to switch to object-oriented programming in JavaScript when you know, for example, Java, C#, or Python, because they also use classes. The advantage of JavaScript is that we can use classes, but we don't have to.
+
+
+Of course, the class models used in different languages are quite different, and in JavaScript the differences are particularly noticeable.
+
+We'll say a few more words about it, but we can already tell you that JavaScript doesn't allow you to directly define properties in the body of the class (only methods are defined) and you can't create private fields (invisible outside the object and created on the basis of the class).
+
+Although both of these techniques have been recently introduced to JavaScript, they are treated as experimental, and it cannot be assumed that all browsers will support them.
+
+What is a class?
+
+As we said in the previous chapter, it is a template that we can use to create a particular type of object.
+
+Using the class and the new keyword, we can create as many objects of a given type as we need.
+
+Inside this template, we specify the methods that will appear in the object and its properties.
+
+An important component of a class is the constructor, which is a function invoked when creating an object based on the class. The constructor is used to initiate a new object. For example, we can set the initial values of the object's properties in it.
+
+As you probably remember, in JavaScript there is a method for creating objects using constructors – unfortunately, under the same name there are two different things (at least at the level of language syntax).
+
+So if the term constructor appears in the text, pay attention to whether it is a class constructor or a constructor function used directly to create an object.
+
+It is also said that the object is of a certain type, with the class name being used as a type designation.
+
+For example, if we created a dog object from the Animal class, this object would be of the Animal type. And of course, the dog would be an instance of the Animal class.
+
+---
+
+2.1 Section 1 – Class declaration
+Scroll to begin 
+
+2.1.1 Class declaration
+To help you define your first class, we will come up with a simple scenario, which we will gradually modify while working through this chapter.
+
+Let’s say we have a small transport company with different vehicles. To start with, we are only interested in locating these vehicles. Each of them will have its own identifier (which we will arbitrarily give by a string of characters). Each vehicle will also be in a certain state (“free”, “busy”, “unavailable”). Its geographical position will be determined by the longitude and latitude properties. Additionally, the time of the last position update will be stored.
+
+Before we move on to class declarations, we will try to write down our scenario using a previously learned method based on constructors (or more precisely, the constructor functions).
+
+Look at the code below:
+
+
+let Vehicle = function(id, latitude, longitude){
+    
+    this.setPosition = function(latitude, longitude) {
+        this.time = Date.now();
+        this.longitude = longitude;
+        this.latitude = latitude;
+    };
+    this.id = id;
+    this.status = "unavailable";
+    this.time = Date.now();
+    this.latitude = latitude;    
+    this.longitude = longitude;
+};
+let vehicle1 = new Vehicle("AL1024", 59.358615, 17.947589);
+vehicle1.setPosition(59.367647, 18.213451);
+console.log(vehicle1);
+
+We have defined the Vehicle function, which will be used as a constructor. As a reminder, every call of this function preceded by the keyword new will create a new object. And what will be in this object depends on the contents of our constructor function and the arguments provided to it. According to our scenario, we have defined the following properties: id, status, time, latitude and longitude, and the setPosition method.
+
+Note the use of the Date.now method when initiating the time property. It returns the current time. The time format is quite specific: the number of milliseconds elapsed since January 1, 1970 00:00:00 UTC (the UNIX epoch). With the help of other Date methods, we can convert this format to something more readable, but at the moment, there is no need to do so.
+
+We will return to Date and other the interesting predefined classes in JavaScript in the next chapter.
+
+Let's give our script a little tidy up.
+
+First of all, the same code is repeated in two places, that is, in the setPosition method and ... can you indicate where?
+
+You're right, when initiating a position with the data provided when creating the object.
+
+This is a redundancy, and we can already get rid of it using the setPosition method at the object initiation stage.
+
+Look at the code below:
+
+
+let Vehicle = function(id, latitude, longitude){
+    this.setPosition = function(latitude, longitude) {
+        this.time = Date.now();
+        this.longitude = longitude;
+        this.latitude = latitude;
+    };
+    this.id = id;
+    this.status = "unavailable";
+    this.setPosition(latitude, longitude);
+};
+
+Can you see the difference?
+
+We can improve one more thing: the way the arguments are passed on to the constructor and to the setPosition method.
+
+What we're going to present in a moment is not only about constructors and is not directly related to objects, but in our opinion it's a pretty good place to get to know the new technique.
+
+Everything that we have written so far is as correct as possible.
+
+However, passing a few arguments, especially of a similar type, can sometimes lead to some ambiguities, mistakes, and as a result, errors.
+
+The position, which we describe with latitude and longitude, is a perfect example of this.
+
+When passing the arguments to the constructor when creating an object, we must remember that latitude is given before longitude.
+
+Usually there will be no problem with that, because in most GIS (Geographic Information System) applications this coordinate order is used, and finally we will remember it.
+
+Sometimes, however, especially when specifying the position at sea, the reverse order is used, giving first longitude, then latitude.
+
+If someone has to deal with such a notation, they can make a mistake by reflex, giving arguments in the wrong order.
+
+We can help ourselves by creating an object on the fly from all arguments, which we will pass to the function (in this case to the constructor) as a single argument.
+
+What does this change? Each field of such an object must have a name, and the order of the fields is irrelevant (by the way, this was the basic difference between an array and an object that we mentioned at the beginning of the previous chapter).
+
+The easiest way to show it is to modify our example.
+
+Look at the code below:
+
+
+let Vehicle = function(initialData){
+    let {id, latitude, longitude} = initialData;
+    this.setPosition = function(latitude, longitude) {
+        this.time = Date.now();
+        this.longitude = longitude;
+        this.latitude = latitude;
+    };
+    this.id = id;
+    this.status = "unavailable"; 
+    this.setPosition(latitude, longitude);
+};
+let vehicle1 = new Vehicle({id: "AL1024", latitude: 59.367647, longitude: 18.213451});
+let vehicle2 = new Vehicle({longitude: 18.213423, latitude: 59.367628, id: "AL1024"});
+
+When calling the constructor, we pass one argument – an object with the id, latitude, and longitude fields (whose order is arbitrary).
+
+The values will be recognized by their names, not by their order. The constructor accepts this object as the initialData parameter and decomposes it into individual fields. The following line:
+
+
+let {id, latitude, longitude} = initialData;
+
+can look pretty weird, and certainly needs an additional explanation. This is called a destructuring assignment.
+
+This mechanism, used in both objects and tables, will be discussed in more detail in the next chapter. In our example, it works as follows:
+
+the local variables id, latitude, and longitude are declared;
+the properties with the same names are found in the initialData object;
+the values of these properties are assigned to the local variables that have just been created.
+So this line is actually nothing but:
+
+
+let id = initialData.id;
+let latitude = initialData.latitude;
+let longitude = initialData.longitude;
+
+The use of initialData is a bit redundant, and exactly the same effect can be achieved by using a destructive assignment directly in the function parameter (here in the constructor).
+
+Let’s improve it.
+
+We will use the same technique in the setPosition method and finally we will add a new getPosition method.
+
+Voila!
+
+Look at the code below:
+
+
+let Vehicle = function({id, latitude, longitude}){
+    this.setPosition = function({latitude, longitude}) {
+        this.time = Date.now();
+        this.longitude = longitude;
+        this.latitude = latitude;
+    };
+    this.getPosition = function() {
+        return {
+            latitude: this.latitude,
+            longitude: this.longitude
+        };
+    };
+    this.id = id;
+    this.status = "unavailable";
+    this.setPosition({latitude, longitude});
+};
+let vehicle1 = new Vehicle({id: "AL1024", latitude: 59.367647, longitude: 18.213451});
+let vehicle2 = new Vehicle({longitude: 18.213423, latitude: 59.367628, id: "AL1024"});
+
+So we have a ready-made example of a constructor function, with which we have created two test objects.
+
+So all we have to do is make it into a class.
+
+We’re going to introduce a new keyword to JavaScript for the creation of classes, and to your great surprise, it is ... class.
+
+The simplest form class declaration and use to create an object can look like this:
+
+
+class EmptyClass {};
+let emptyObject = new EmptyClass;
+
+Our EmptyClass class contains nothing, like the emptyObject created on its basis. Note that the class name starts with an uppr-case letter (it's just a practice, but you should definitely stick to it) and we create an object using the new operator. Both restrictions are identical to the technique of creating objects using constructors. Class definitions may include methods with which new objects will be equipped.
+
+Additionally, each class should have a constructor, that is, a function that will be called when creating a new object on its basis. The constructor is not given a name, but in each class it is named the same way: constructor.
+
+In our example, besides the constructor, we will add the example method sayHi.
+
+Look at the code below:
+
+
+class AlmostEmptyClass {
+    constructor(sth) {
+        console.log(sth);
+    };
+    sayHi() {
+        console.log("Hi!")
+    };
+};
+let almostEmptyObject = new AlmostEmptyClass(120); // -> 120
+almostEmptyObject.sayHi(); // -> Hi!
+
+Actually, this is all you need to know to define a simple class (we’re not thinking yet about inheritance and similar problems).
+
+It's worth highlighting just one cosmetic detail – make sure that the methods in the class are not separated by commas.
+
+Be careful with that, because by the visual similarity of classes to the declaration of an object using literal notation (in both cases we use curly brackets) it is the most common cause of errors among beginner programmers using classes in JavaScript.
+
+Let’s go back to the example with the vehicles we just prepared for you (look at the code below):
+
+
+class Vehicle {
+ constructor({id, latitude, longitude}){
+    this.setPosition = function({latitude, longitude}) {
+        this.time = Date.now();
+        this.longitude = longitude;
+        this.latitude = latitude;
+    };
+    this.getPosition = function() {
+        return {
+            latitude: this.latitude,
+            longitude: this.longitude
+        };
+    };
+    this.id = id;
+        this.status = "unavailable";
+    this.setPosition({latitude, longitude});
+    };
+};
+let vehicle1 = new Vehicle({id: "AL1024", latitude: 59.367647, longitude: 18.213451});
+let vehicle2 = new Vehicle({longitude: 18.213423, latitude: 59.367628, id: "AL1024"});
+
+In the example, we used the technique of constructors. Now we will write the same thing down using classes.
+
+Having the previous example open in another window will allow you to observe the differences, which will turn out to be minor.
+
+
+According to the pattern presented before, we declared a Vehicle class. At the moment, it contains only the constructor.
+
+We copied to it the contents of the Vehicle function from the previous example.
+
+Used in our class, this also has the same meaning as before. It indicates a specific object (an instance), created on the basis of this class.
+
+Is it true that the changes are minor?
+
+
+Then we created two objects, vehicle1 and vehicle2, of the Vehicle type (i.e. objects based on the Vehicle class).
+
+These objects will, of course, have all their properties defined in the class constructor and methods declared in the body of the class.
+
+Creating an object is no different from the one we learned when discussing the technique of constructors.
+
+The example is correct, but not very elegant.
+
+The methods getPosition and setPosition are unnecessarily declared inside the constructor.
+
+The code will become more readable if we use what the class provides and change the place of their declaration.
+
+Look at the code below:
+
+
+class Vehicle {
+    constructor({id, latitude, longitude}){
+        this.id = id;
+        this.status = "unavailable";
+        this.setPosition({latitude, longitude});
+    };
+    setPosition({latitude, longitude}) {
+        this.time = Date.now();
+        this.longitude = longitude;
+        this.latitude = latitude;
+    };
+    getPosition() {
+        return {
+            latitude: this.latitude,
+            longitude: this.longitude
+        };
+    };
+};
+let vehicle = new Vehicle({longitude: 18.213423, latitude: 59.367628, id: "AL1024"});
+vehicle.setPosition({longitude: 18.193121, latitude: 59.378654});
+console.log(vehicle.getPosition());
+
+You'll agree it looks a little simpler now, won't you?
+
+At first glance, you can see that an object created on the basis of this class will have the getPosition and setPosition methods.
+
+
+2.1.2 Class expression
+Classes, like functions, are treated in JavaScript as first-class citizens.
+
+This is a concept from the theory of programming languages, which states that a certain entity can be treated on an equal footing with other entities, such as simple data types.
+
+What is important in this tricky definition is that such an entity can be passed as an argument, returned by a function and stored in a variable.
+
+We discovered this feature when discussing functions.
+
+Let's take a look at a few function declarations.
+
+Look at the code below:
+
+
+function namedFunction() { 
+    console.log("I'm named, I hope ... ") 
+};
+let anonymousFunction = function() {
+    console.log("I'm a bit anonymous ...")
+};
+let notExactlyAnonymousFunction = function anotherNamedFunction() {
+    console.log("I'm confused ...")
+};
+namedFunction();    // -> I'm named, I hope ...
+anonymousFunction();    // -> I'm a bit anonymous ...
+notExactlyAnonymousFunction();    // -> I'm confused ...
+
+The namedFunction has been declared with a name, that is, it is a named function.
+
+We call it using this name. As you can guess, anonymousFunction is an anonymous function.
+
+You can see that there is nothing between the function keyword and the parenthesis, and the space for the function name has not been filled.
+
+The anonymousFunction variable holds this function, or more precisely, a reference to it.
+
+We call the function using this variable.
+
+The last example is a declaration of a named function, which we assign to the variable notExactlyAnonymousFunction (we will refer to the function using this variable).
+
+The ability to store a function in a variable (i.e. a function expression) indicates that functions in JavaScript are first-class citizens.
+
+The same is true for classes. We can declare a named class, as we have done in the previous examples, but we can also store unnamed ones in a variable.
+
+By analogy, we will call it a class expression. Remember our example from the AlmostEmptyClass class?
+
+Let’s declare it now using a class expression – look at the code below:
+
+
+let AlmostEmptyClass = class {
+    constructor(sth) {
+        console.log(sth);
+    };
+    sayHi() {
+        console.log("Hi!")
+    };
+};
+let almostEmptyObject = new AlmostEmptyClass(120); // 120
+almostEmptyObject.sayHi(); // -> Hi!
+
+Remember that despite being substituted for a variable, it is still a class, not an object.
+
+As you can see, the difference affects only the first line of our examples:
+
+
+...
+class AlmostEmptyClass {
+...
+
+
+...
+let AlmostEmptyClass = class {
+...
+
+2.1.3 The instance of operator
+Let's go back to the concepts we introduced at the beginning of this chapter.
+
+Among other things, the name instance appeared there. Do you remember what it was?
+
+This is what we call an object created on the basis of a class (an object is an instance of that class). Looking at the last example, we can say that the almostEmptyObject is an instance of the AlmostEmptyClass class. Alternatively, we can say that almostEmptyObject is of an AlmostEmptyClass type.
+
+In our simple example, this is apparent immediately. There is not much code, and in the same place, we declare a class and create an object.
+
+But what to do if we want to know the type of object in a more complex code?
+
+Such a code can contain thousands of lines, be split into many files, and can include libraries and pieces of code written not only by us. We can operate with many objects and often even when we know what classes we have, we may not be sure if a given object is an instance of a certain class.
+
+We have previously encountered the typeof operator, which allows us to check the types of variables and values.
+
+Let's check if it could be useful in this case too:
+
+
+console.log(typeof almostEmptyObject); // -> "object"
+
+Unfortunately, it turns out, as we tested before, that typeof for almostEmptyObject will return "object".
+
+This is true information, but rather not what we expected. We are looking for the class from which our object was created, and not just a confirmation that the object is an object.
+
+So we need to use other means. So we need to use other means.
+
+In every object (or maybe almost every object, and certainly in one that is created using the class or constructor function) we will find the field constructor.
+
+At this stage of learning, we don’t have to analyze the contents of this field too thoroughly, we just need to know that we will find in it, among others, the name property. This property should contain the name of the class from which our object was created.
+
+Let's check it out:
+
+
+console.log(almostEmptyObject.constructor.name); // -> "AlmostEmptyClass"
+
+This time the effect is in line with our expectations. By the way, if an object is created using the constructor technique, constructor.name will indicate the name of the constructor function. Try to rewrite the AlmostEmptyClass class to the constructor function, e.g. AlmostEmpty.
+
+Use this function to create an object and check the constructor.name field.
+
+However, the instanceof operator is used more often in practice than constructor.name. It is not an alternative in the literal sense of the word. The instanceof operator does not return the name of the class whose object is an instance, but only tests whether the class and object are related.
+
+It returns true or false, confirming or denying that the specified object is an instance of the specified class.
+
+So in order to use this operator, we need to have an idea of which class we are looking for.
+
+In most cases, this is absolutely sufficient.
+
+
+console.log(almostEmptyObject instanceof AlmostEmptyClass); // -> true
+console.log(almostEmptyObject instanceof String); // -> false
+let str = new String("test me");
+console.log(str instanceof String); // -> true
+
+Let's do one more experiment.
+
+We have already checked that the instanceof operator works as expected for the almostEmptyObject, and confirmed that the object is an instance of AlmostEmptyClass.
+
+Let's repeat the test, but this time instead of AlmostEmptyClass, let's use the generic Object class.
+
+
+console.log(almostEmptyObject instanceof Object); // -> true
+
+The result may be slightly surprising and needs to be explained.
+
+First of all, all objects created with the usage of classes inherit implicitly from the Object class. Imagine that we have the ABC class, which is openly inherited from the DEF class, and this in turn from the GHI class. The GHI class is written from scratch, but by default it inherits from the generic Object class.
+
+So somewhere at the beginning of this chain is the Object class – the ABC class also inherits from it (the inheritance will be discussed in more detail later in this chapter).
+
+The second issue to be clarified is the same instanceof behavior. It tests the whole inheritance chain of the specified class. If we create an abc object based on the ABC class, then all of them will be true:
+
+
+abc instanceof ABC; // -> true
+abc instanceof DEF; // -> true
+abc instanceof GHI; // -> true
+abc instanceof Object; // -> true
+
+So in the case of objects, the typeof operator will only return a confirmation that what we are examining is an object.
+
+The instanceof operator will let us confirm (or deny) that the indicated object is an instance of a certain class.
+
+However, when looking for a class name, we can use the constructor.name property of the object.
+
+---
+
+2.2 Section 2 – Properties
+Scroll to begin 
+
+2.2.1 Properties
+Objects, in addition to methods, obviously contain properties.
+
+Classes must therefore be able to define them.
+
+This requires some additional explanation, because the original class syntax introduced into JavaScript in ECMAScript 6 does not offer the possibility to explicitly declare properties inside the class body.
+
+This possibility has been added relatively recently, but it is still an experimental technique.
+
+
+We’ll discuss two methods of declaring a property: in the body of the constructor and methods, and an alternative, the new one, in the body of the class.
+
+Both types of declaration can be used simultaneously in one class.
+
+2.2.2 Property definitions inside class methods
+When introducing classes into the JavaScript language, it was assumed that properties would be defined according to the needs inside the bodies of the constructor and methods.
+
+To be honest, it is not really a true declaration. We take advantage of the fact that if we try to store the value in a non-existent property, it will be created automatically.
+
+Exactly the same technique is used in the constructor method we learned.
+
+This is nothing particularly burdensome. The only inconvenience may be the readability of the code of such a class – at first glance, we may have a problem with locating all the properties (their definition may be scattered over different methods).
+
+In our example (look at the code below) with the Vehicle class, we declared the properties exactly this way, so let's look at it again.
+
+
+class Vehicle {
+    constructor({id, latitude, longitude}){
+        this.id = id;
+        this.status = "unavailable";
+        this.setPosition({latitude, longitude});
+    };
+    setPosition({latitude, longitude}) {
+        this.time = Date.now();
+        this.longitude = longitude;
+        this.latitude = latitude;
+    };
+    getPosition() {
+        return {
+            latitude: this.latitude,
+            longitude: this.longitude
+        };
+    };
+};
+
+In the constructor, we implicitly declare the two properties id and status, assigning to them the values given when creating a new object.
+
+Initially, the object does not yet have such fields, so they are created. Only then are the passed values stored in them (initialization takes place).
+
+Then the setPosition method is called. In its body, we refer to the properties time, longitude, and latitude, because when we call the setPosition method for the first time these properties don't exist yet, so if we try to assign something to them we will create them first.
+
+Subsequent calls of the setPosition method, e.g. vehicle.setPosition(0,0), will of course only result in new values being assigned to existing properties.
+
+
+2.2.3 Direct declaration inside the class body
+Over time, the possibility to explicitly declare properties in the body of the class was introduced to JavaScript, in a way similar to the declaration of methods.
+
+Additionally, a distinction between public and private properties was introduced. Public properties are those that are accessible from outside the object (that is, in our example with the Vehicle class, all properties). Private properties are not available outside the object – only the object methods have access to them.
+
+
+class Vehicle {
+    status = "unavailable";
+    constructor({id, latitude, longitude}){
+        this.id = id;
+        this.setPosition({latitude, longitude});
+    };
+    setPosition({latitude, longitude}) {
+        this.time = Date.now();
+        this.longitude = longitude;
+        this.latitude = latitude;
+    };
+    getPosition() {
+        return {
+            latitude: this.latitude,
+            longitude: this.longitude
+        };
+    };
+};
+
+  Note   Declaring both public and private property in the body of the class is an “experimental feature”, still in the standardization stage, and it cannot be assumed that all browsers will support it. Optionally, you can then use solutions such as Babel, that is, building systems, that work like a kind of compiler. They analyze our JavaScript code and, among other things, "translate" certain constructions which are not yet a common standard into equivalent ones. However, the use of builders is definitely beyond the scope of our course. So we will learn how to create property declarations in the body of the class, but we will rather not use them.
+
+In our example, a good candidate for such a declaration is the status property. It is initiated when creating an object, but does not depend on the constructor's arguments. It always has the value "unavailable" at the beginning. So it will be a declaration combined with initialization.
+
+
+Simple, isn't it?
+
+The status property appears directly in the body of the class, this time without the preceding this. The property is initiated in the same place (this part disappears from the constructor).
+
+Try to create an object of this class and check if this property actually exists, and what value it holds.
+
+Over time, the possibility to explicitly declare properties in the body of the class was introduced to JavaScript, in a way similar to the declaration of methods.
+
+We also have the possibility to define certain properties as private (as well as methods, but since these are experimental techniques, we will only stay with properties).
+
+We declare a private property in the body of a class, and we mark its “privacy” by starting the name with #.
+
+In our example, the longitude and latitude properties are ideal for this. We have prepared the getPosition and setPosition methods, which allow us to read and modify the position stored with these two properties.
+
+There is no need to allow direct access to these properties from outside.
+
+Let's look at an example below:
+
+
+class Vehicle {
+    status = "unavailable";
+    #longitude;
+    #latitude;
+    constructor({id, latitude, longitude}){
+        this.id = id;
+        this.setPosition({latitude, longitude});
+    };
+    setPosition({latitude, longitude}) {
+        this.time = Date.now();
+        this.#longitude = longitude;
+        this.#latitude = latitude;
+    };
+    getPosition() {
+        return {
+            latitude: this.#latitude,
+            longitude: this.#longitude
+        };
+    };
+};
+let vehicle = new Vehicle({longitude: 18.213423, latitude: 59.367628, id: "AL1024"});
+console.log(vehicle.getPosition());
+console.log(vehicle.#longitude); // error
+
+Simple, isn't it?
+
+In the body of the class, we add the declarations of the #longitude and #latitude fields. They are initialized the first time setPosition is called.
+
+As you can see, they are available for our object methods: getPosition and setPosition.
+
+Trying to access them directly from outside the object will result in an exception being thrown.
+
+  Note   Later in the course, we will not use declarations of ownership in the body of the class. We will stick with the classic approach with declarations in the bodies of the constructor and methods. However, you should be familiar with this technique because it will probably become a standard quite soon.
+
+---
+
+2.3 Section 3 – Getters and setters
+Scroll to begin 
+
+2.3.1 Getters and setters
+In the chapter on objects, we learned about getters and setters.
+
+Hopefully you at least roughly remember what we used them for: a special kind of method that we used to get and set up object properties.
+
+What was so special about them?
+
+The very definition where we used the keywords get and set, but most of all the way we used them.
+
+
+We didn't call them like regular methods, but we used their names like properties (e.g. to write something into the setter, we put a value into it).
+
+The classes also allow you to define getters and setters.
+
+We declare them using the keywords get and set. In an object that is an instance of a given class, we refer to them by name, just as we do with regular properties.
+
+Methods of this type in classes have exactly the same constraints as those discussed in the chapter on objects, so that, among other things, setter takes exactly one argument, and getter takes none.
+
+Let's try to modify our example with the Vehicle class by changing the setPosition and getPosition methods to setter and getter positions respectively.
+
+
+class Vehicle { 
+    constructor({id, latitude, longitude}){ 
+        this.id = id; 
+        this.position = {latitude, longitude}; 
+        this.status = "unavailable"; 
+    };
+    set position({latitude, longitude}) { 
+        this.time = Date.now(); 
+        this.longitude = longitude; 
+        this.latitude = latitude; 
+    };
+    get position() { 
+        return { 
+            latitude: this.latitude, 
+            longitude: this.longitude 
+        }; 
+    };
+};
+let vehicle = new Vehicle({longitude: 18.213423, latitude: 59.367628, id: "AL1024"});
+vehicle.position = {longitude: 18.193121, latitude: 59.378654};
+console.log(vehicle.position);
+
+Analyze the code carefully, comparing it with the previous version, in which we didn't use getters and setters, but regular methods.
+
+Don't limit yourself to the body of the class.
+
+Also look at the creation and use of the vehicle object. You should locate four major differences.
+
+Good luck!
+
+
+---
+
+2.4 Section 4 – Inheritance
+Scroll to begin 
+
+2.4.1 Inheritance
+One of the main reasons for introducing classes in JavaScript was to simplify the inheritance notation.
+
+In fact, the new mechanism still works on prototypes, but its syntax is much simpler.
+
+To indicate that a class inherits methods and properties from another class, we use the keyword extends.
+
+So the new class extends the definition of the old class (without modifying the base class, of course).
+
+
+Coming back to our small transport company, we just came up with an idea to distinguish between passenger and freight vehicles.
+
+The number of seats will be important for passengers, so we decided to create a new Bus class based on the Vehicle class.
+
+Why use the Vehicle class for this purpose?
+
+The buses will have all the properties of the vehicles, so we only need to extend them with the property specifying the number of seats.
+
+The new Bus class will extend the Vehicle class and have its own constructor, in which we will define and initialize the seat property.
+
+Class Bus extends Vehicle {
+    constructor({seats}) {
+        this.seats = seats;
+    }
+}
+let bus = new PassengerVehicle({seats: 40}); 
+console.log(bus.seats); // -> 40
+console.log(bus.id); // -> ! undefined
+
+At first glance, everything looks fine. We have a new Bus class, extending the Vehicle class, and its instance, the bus object.
+
+The seats property has the correct value, but something is not right with the id property. It turns out that it has an undefined value, just like other properties inherited from the Vehicle class.
+
+Why did this happen? We forgot to pass the arguments that are needed to initiate the remaining properties to the new constructor.
+
+Let's correct this.
+
+Class Bus extends Vehicle {
+    constructor({seats}) {
+        this.seats = seats;
+    }
+}
+let bus = new PassengerVehicle({seats: 40}); 
+console.log(bus.seats); // -> 40
+console.log(bus.id); // -> ! undefined
+
+It looks a little better.
+
+When creating a new object, we provide all the necessary arguments, and we receive them in the constructor.
+
+So why does it still not work as we expect? For a very simple reason.
+
+Although we receive all the necessary values in the new constructor, we do not do anything with them.
+
+In order to fix this, we could set the necessary properties one by one in the new constructor, but this way we would practically rewrite the already existing Vehicle constructor.
+
+At this point a new keyword can help us: super. It may be used in the inheritance of classes to call the constructor of the base class (in our case the Vehicle class).
+
+This is what we need!
+
+Let's fix the code again.
+
+
+class Bus extends Vehicle {
+    constructor({seats, id, latitude, longitude}) {
+        super({id, latitude, longitude});
+        this.seats = seats;
+    }
+}
+let bus = new Car({seats: 4, longitude: 18.213423, latitude: 59.367628, id: "AL1024"}); 
+console.log(bus.seats); // -> 4
+console.log(bus.id); // -> "AL1024"
+
+This time, it's all working well.
+
+Thus, we can already create a class from an existing class using inheritance (or, according to JavaScript nomenclature, extending).
+
+By the way, in JavaScript, the base class that we extend is often called a super class.
+
+
+2.4.2 Shadowing
+When you extend a class, you may experience shadowing.
+
+This happens, for example, when in a new class you have defined a method with the same name as the method in the base class.
+
+In such a situation, the new method defined in the class extending the base class “wins”. The new method shadows the old one.
+
+However, you have the option to call a shadowed base class method. Again, the super keyword comes to the rescue.
+
+Let's analyze a simple case, in which the AlmostEmptyClass class is being extended by creating a new ExtendedClass class.
+
+The base class, besides the constructor, has only one method: sayHi. In the new class, we will define a new method with the same name.
+
+To this we will add two methods, newHi and oldHi.
+
+The newHi method will refer to sayHi with this. The oldHi method will use super instead of this.
+
+Look at the code below:
+
+
+class AlmostEmptyClass { 
+    constructor(sth) { 
+        console.log(sth); 
+    }; 
+    sayHi() { 
+        console.log("Hi!") 
+    }; 
+}; 
+    class ExtendedClass extends AlmostEmptyClass {
+        constructor(name) {
+            super("I’m super ...");
+            this.name = name;
+        };
+    sayHi() { 
+        console.log(`Hi ${this.name}!`); 
+    };
+    newHi() {
+        this.sayHi();
+    }
+    oldHi() {
+        super.sayHi();
+    };
+};
+let obj = new ExtendedClass("Bob"); // -> I’m super ...
+obj.sayHi();    // -> Hi Bob!
+obj.newHi();    // -> Hi Bob!
+obj.oldHi();    // Hi!
+
+What is the effect of our script? Let’s look at it piece by piece:
+
+Calling sayHi() triggers a new sayHi method, defined in ExtendedClass. This method shadows sayHi from the AlmostEmptyClass class. As a result, "Hi Bob!" is shown on the console.
+Calling obj.newHi() causes us to call this.sayHi() inside this method, which means that we again refer to the sayHi method of the ExtendedClass class. And again, Hi Bob!" appears on the console.
+Only calling obj.oldHi() gives a different effect. Inside this method, instead of this, we use super calling super.sayHi(). In this way, we force the base class method – in this case the class AlmostEmptyObject. And on the console we get "Hi!".
+So remember that during inheritance, new fields shadow the old ones if they have the same names. You can access the base class fields from inside the new methods using the super keyword instead of this.
+
+2.4.3 Inheritance from a constructor function
+The new class can not only extend another class.
+
+In this inheritance mechanism, we can also use constructor functions, that is, a separate method for creating objects.
+
+Let’s define a constructor called AlmostEmpty, which will be the exact equivalent of AlmostEmptyClass from the previous example.
+
+
+Let AlmostEmpty = function(sth) { 
+    console.log(sth); 
+    this.sayHi = function() { 
+        console.log("Hi!") 
+    }; 
+};
+
+The keyword extends allows us to create a new class based on such a constructor.
+
+In this case, we treat the name of the constructor function as the name of the base class.
+
+
+class ExtendedClass extends AlmostEmpty {
+    constructor(name) {
+        super("I’m super ...");
+        this.name = name;
+    };
+    sayHi() { 
+        console.log(`Hi ${this.name}!`); 
+    };
+};
+let obj = new ExtendedClass("Bob");
+obj.sayHi();    // -> Hi Bob!
+
+You can also use objects and as well as other classes to expand classes, but the technique is a bit more complex, and we won't introduce any more confusion.
+
+---
+
+2.5 Section 5 – Static members
+Scroll to begin 
+
+2.5.1 Static members
+In classes, in addition to the regular methods and properties (called prototype ones), we can also define static methods and properties.
+
+These are fields that will not appear in the created object – they will be associated only with the class.
+
+It may seem a little illogical, and it's hard to find a justification for the existence of such static fields at the moment, so let's try to take a closer look at them.
+
+Remember our almostEmptyClass class?
+
+Besides the constructor, we defined the sayHi method inside it.
+
+
+Let's add the sayHello method, this time static. The declaration inside the class body should be preceded by the static keyword.
+
+Look at the code below:
+
+
+class AlmostEmptyClass {
+    constructor(sth) {
+        console.log(sth);
+    };
+    sayHi() {
+        console.log("Hi!")
+    };
+    static sayHello() {
+        console.log("Hello!")
+    };
+};
+let almostEmptyObject = new AlmostEmptyClass(120); // 120
+almostEmptyObject.sayHi(); // -> Hi!
+almostEmptyObject.sayHello(); // error
+AlmostEmptyClass.sayHello(); // -> Hello!
+
+As we predicted, the static method does not appear in the newly created almostEmptyObject. Instead, it is available directly in the AlmostEmptyClass class.
+
+Declaring and using static methods is very simple.
+
+However, it will not be so easy to find an answer to the question of why to use such a mechanism, and at the moment, it may seem absolutely useless or even pointless to you.
+
+Nothing could be further from the truth. It happens quite often that we have to create tool methods that will operate on several objects of a given type (that is, instances of one class).
+
+A simple example can be a method checking whether or not the objects are equal.
+
+The decision whether the objects will be considered to be the same or different will belong to someone who will write an appropriate comparison method.
+
+Such a method is logically not related to a single object (or instance) but to the type of this object.
+
+Therefore, it should not be placed inside the object.
+
+It is connected with the class, so it is an ideal candidate for the role of the static method.
+
+Let's go back to our example with the Vehicle class.
+
+Let's say we want to be able to test if two objects of this class do not describe the same vehicle by chance.
+
+For this purpose, we will not perform a deep-comparison of all fields (you should remember this term from the chapter on objects).
+
+It is enough to compare their identifiers, i.e. id properties.
+
+Let's add a new, static method: isSameId.
+
+Note that making comparisons with this method will only make sense for objects that are instances of the Vehicle class, and it is not a universal method for all objects.
+
+
+class Vehicle {
+    constructor({id, latitude, longitude}){
+        this.id = id;
+        this.status = "unavailable";
+        this.setPosition({latitude, longitude});
+    };
+    setPosition({latitude, longitude}) {
+        this.time = Date.now();
+        this.longitude = longitude;
+        this.latitude = latitude;
+    };
+    getPosition() {
+        return {
+            latitude: this.latitude,
+            longitude: this.longitude
+        };
+    };
+    static isSameId(v1, v2) {
+        return v1.id === v2.id;
+    };
+};
+let vehicle1 = new Vehicle({longitude: 18.213423, latitude: 59.367628, id: "AL1024"});
+let vehicle1 = new Vehicle({longitude: 0, latitude: 0, id: "AL1024"});
+let vehicle1 = new Vehicle({longitude: 18.213423, latitude: 59.367628, id: "AL1026"});
+Vehicle.isSameId(vehicle1, vehicle2); // -> true
+Vehicle.isSameId(vehicle1, vehicle2); // -> false
+
+The new static method, associated with the Vehicle class, allows us to compare objects that are instances of this class.
+
+The way of referring to the static method, for example in our case Vehicle.isSameId suggests one more thing: we use dot notation, so the classes in JavaScript are also ... objects.
+
+According to the principle quoted at the beginning of the previous chapter, in JavaScript everything, except primitives, is an object.
+
+We will not think about it too much at this point, but let's just pay attention to one consequence of this fact.
+
+The static method (or also property) can be defined not only in the body of the class using the static keyword.
+
+We might as well do it after class declaration, e.g. this way:
+
+
+Vehicle.isSameId =  function(v1, v2) {
+    return v1.id === v2.id;
+};
+
+
+---
+
+2.6 Section 6 – Classes vs. constructors
+Scroll to begin 
+
+2.6.1 Classes vs. constructors
+You've probably already figured out that the classes in JavaScript are very similar to the constructor functions (the constructor technique of object creation).
+
+The vast majority of what appears in JavaScript with classes is actually just syntactical sugar over existing prototyped base inheritance (most, but not all).
+
+The concept of syntactical sugar in programming is a feature of the language that can be eliminated by syntactical transformation, and that serves only the convenience of the programmer.
+
+So classes in JavaScript are not a completely new philosophy, just a new, slightly more convenient wrapper for what already existed.
+
+Compare two pieces of code, functionally identical, one written with classes, the other with constructors. You should easily catch the similarities and differences.
+
+By the way, note that we declare two methods with the same name.
+
+How is that possible? One is an ordinary (prototype) method, so it is related to the created object (with the instance). The other method is static.
+
+In other words, it is related either to the class, or in the case of constructor techniques, to a constructor.
+
+
+class TestClass { 
+    constructor(arg) {
+        this.arg = arg;
+        console.log(this.arg);
+    }; 
+    
+    showSth() { 
+        console.log("I'm prototyped!");
+    };
+    
+    static showSth() { 
+        console.log(`Hi, I'm static!`);
+    };  
+}; 
+let test = new TestClass("Hello");
+test.showSth(); // -> I'm prototyped!
+TestClass.showSth(); // -> I'm static!
+console.log(test instanceof TestClass);
+
+
+let Test = function(arg) { 
+    this.arg = arg;
+    console.log(this.arg);
+}; 
+    
+Test.prototype.showSth = function() { 
+    console.log("I'm prototyped!");
+};
+    
+Test.showSth = function() { 
+    console.log(`Hi, I'm static!`);
+};  
+let test = new Test("Hello");
+test.showSth(); // -> I'm prototyped!
+Test.showSth(); // -> I'm static!
+console.log(test instanceof Test);
+
+The version of the code using constructor functions is written correctly, but is a little bit unusual, in order to make it easier to compare it with the code using classes.
+
+Among other things, it shows why the regular methods (not static) that appear in the created object are called prototype ones.
+
+If we had written normal code and not a reference code for comparison, we would probably create something like this:
+
+
+let Test = function(arg) { 
+    this.arg = arg;
+    this.showSth = function() { 
+        console.log("I'm prototyped!");
+    };
+    console.log(this.arg);
+}; 
+        
+Test.showSth = function() { 
+    console.log(`Hi, I'm static!`);
+};
+
+Usually the choice between using classes and constructors is highly subjective.
+
+Both methods give you exactly the same options. If you’re working alone, you simply choose the method that is more convenient for you.
+
+If you are in a larger team, the method will probably be imposed on you in order to produce consistent code.
+
+It may also happen that you will be forced to use a particular method by the framework or libraries you will be using (for example, classes have long been the basis of the React framework).
+
+
+---
+

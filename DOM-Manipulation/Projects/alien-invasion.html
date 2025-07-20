@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8" />
+  <title>Alien Invasion Tech</title>
+  <link rel="stylesheet" href="styles.css" />
+  <script src="script.js" defer></script>
+  <style>
+    * { box-sizing: border-box; }
+    body { background-color: #0b0c10; color: #c5c6c7; font-family: 'Courier New', Courier, monospace; margin: 2rem; }
+    header { display: flex; align-items: center; gap: 1rem; margin-bottom: 2rem; }
+    header img { width: 60px; }
+    header h1 { color: #66fcf1; margin: 0; }
+    header p { color: #45a29e; margin: 0; }
+    #tabs { max-width: 600px; }
+    menu { display: flex; gap: 0.5rem; margin-bottom: 1rem; }
+    button { background: #1f2833; color: #c5c6c7; border: none; padding: 0.75rem 1rem; border-radius: 5px 5px 0 0; cursor: pointer; }
+    button.active, button:hover { background: #66fcf1; color: #0b0c10; }
+    #tab-content { background: #1f2833; padding: 1rem; border-radius: 0 0 5px 5px; }
+    li { margin: 0.5rem 0; }
+  </style>
+</head>
+<body>
+  <header>
+    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/d/d2/UFO_in_Night_Sky.png/80px-UFO_in_Night_Sky.png" alt="Alien Logo" />
+    <div>
+      <h1>Alien Invasion Tech</h1>
+      <p>Geheime Technologien aus fernen Galaxien</p>
+    </div>
+  </header>
+
+  <div id="tabs">
+    <menu>
+      <button id="btn-propulsion" class="active">Antrieb & Tarnung</button>
+      <button id="btn-biotech">Biotechnologie</button>
+      <button id="btn-risks">Gefahrenanalyse</button>
+    </menu>
+    <div id="tab-content">
+      <ul>
+        <li>Graviton-Antriebssysteme aus der Andromeda-Galaxie</li>
+        <li>Antimaterie-Reaktoren mit Subraumstabilisatoren</li>
+        <li>Tarnfeld-Technologie, die Licht und Radar bricht</li>
+        <li>Teleportationsportale für Sofort-Invasionen</li>
+      </ul>
+    </div>
+  </div>
+
+<script>
+const content = [
+  [
+    "Graviton-Antriebssysteme aus der Andromeda-Galaxie",
+    "Antimaterie-Reaktoren mit Subraumstabilisatoren",
+    "Tarnfeld-Technologie, die Licht und Radar bricht",
+    "Teleportationsportale für Sofort-Invasionen"
+  ],
+  [
+    "Gedankenkontroll-Chips zur Manipulation der Menschheit",
+    "Bio-Maschinen mit organischer Software",
+    "Nano-Sonden zur Atmosphärenanpassung",
+    "Hybridisierung zwischen Alien-DNS und irdischer Biologie"
+  ],
+  [
+    "Gefahr durch planetenweites EMP",
+    "Technologie-Reverse-Engineering durch Menschen",
+    "Kampfroboter vs. Alien-Drohnen – Vergleich",
+    "Alien-Basis auf der Rückseite des Mondes entdeckt"
+  ]
+];
+
+const btnPropulsion = document.getElementById("btn-propulsion");
+const btnBiotech = document.getElementById("btn-biotech");
+const btnRisks = document.getElementById("btn-risks");
+const tabContent = document.getElementById("tab-content");
+
+function displayContent(items) {
+  let listContent = "";
+  for (const item of items) {
+    listContent += `<li>${item}</li>`;
+  }
+  const list = document.createElement("ul");
+  list.innerHTML = listContent;
+  tabContent.innerHTML = "";
+  tabContent.append(list);
+}
+
+function highlightButton(btn) {
+  btnPropulsion.className = "";
+  btnBiotech.className = "";
+  btnRisks.className = "";
+  btn.className = "active";
+}
+
+function handleClick(event) {
+  const btnId = event.target.id;
+  highlightButton(event.target);
+  if (btnId === "btn-propulsion") {
+    displayContent(content[0]);
+  } else if (btnId === "btn-biotech") {
+    displayContent(content[1]);
+  } else {
+    displayContent(content[2]);
+  }
+}
+
+btnPropulsion.addEventListener("click", handleClick);
+btnBiotech.addEventListener("click", handleClick);
+btnRisks.addEventListener("click", handleClick);
+</script>
+
+</body>
+</html>

@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <title>Smooth Scroll Beispiel</title>
+  <style>
+    html {
+      scroll-behavior: smooth; /* Optional: globaler smooth scroll */
+    }
+
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+    }
+
+    header {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      background: #333;
+      color: white;
+      padding: 1rem;
+      z-index: 1000;
+    }
+
+    nav a {
+      color: white;
+      margin-right: 1rem;
+      text-decoration: none;
+    }
+
+    section {
+      height: 100vh;
+      padding-top: 80px;
+      padding-left: 20px;
+      box-sizing: border-box;
+    }
+
+    #section1 { background: #f4f4f4; }
+    #section2 { background: #e2e2e2; }
+    #section3 { background: #ccc; }
+    #section4 { background: #aaa; }
+  </style>
+</head>
+<body>
+
+  <header>
+    <nav>
+      <a href="#section1" class="smooth-scroll">Abschnitt 1</a>
+      <a href="#section2" class="smooth-scroll">Abschnitt 2</a>
+      <a href="#section3" class="smooth-scroll">Abschnitt 3</a>
+      <a href="#section4" class="smooth-scroll">Abschnitt 4</a>
+    </nav>
+  </header>
+
+  <section id="section1">
+    <h2>Abschnitt 1</h2>
+    <p>Inhalt hier...</p>
+  </section>
+
+  <section id="section2">
+    <h2>Abschnitt 2</h2>
+    <p>Mehr Inhalt hier...</p>
+  </section>
+
+  <section id="section3">
+    <h2>Abschnitt 3</h2>
+    <p>Noch mehr Inhalt hier...</p>
+  </section>
+
+  <section id="section4">
+    <h2>Abschnitt 4</h2>
+    <p>Letzter Abschnitt...</p>
+  </section>
+
+  <script>
+    // Optional: Wenn du JavaScript smooth scroll bevorzugst
+    /*document.querySelectorAll('a.smooth-scroll').forEach(link => {
+      link.addEventListener('click', function (e) {
+        e.preventDefault();
+        const targetId = this.getAttribute('href').substring(1);
+        const target = document.getElementById(targetId);
+        if (target) {
+          target.scrollIntoView({
+            behavior: 'smooth',
+            block: 'start'
+          });
+        }
+      });
+    });*/
+  </script>
+
+</body>
+</html>

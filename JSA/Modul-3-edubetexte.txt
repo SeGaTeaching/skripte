@@ -1,0 +1,3076 @@
+3.0 Section 0 – Built-in objects
+Scroll to begin 
+
+
+3.0.1 Built-in objects
+You’ve now learned to define and create your own objects using techniques such as literals, constructors, or classes.
+
+The structure of these objects, that is, the properties and methods they contain, will obviously result from what you need at the moment.
+
+However, we do not have to do everything ourselves. In JavaScript, many of the language's functionalities are provided in the form of ready-made, predefined objects.
+
+If, for example, you want to do some math, you will reach for Math, and you will use JSON to convert an object to a form that can be sent through the network.
+
+
+These are some of the standard built-in objects.
+
+The term "built-in object" is a generally accepted term, used for example in the ECMAScript standard or in the MDN (Mozilla Developer Network) Web Docs documentation, which is probably the most complete help for web developers.
+
+Many of these objects, like Math and JSON, are actually ordinary objects. We use them by giving the name of the object and the method or property that is specific to it, for example, JSON.stringify.
+
+However, not all "built-in" objects are ordinary objects.
+
+It’s just an overall term under which, in many cases, built-in classes or functions, such as Object or Date, are also hidden.
+
+So shouldn't we call them "built-in classes"?
+
+Not necessarily – as we said before, in JavaScript everything except primitives is an object, including classes and functions.
+
+Therefore, a unified naming convention has been adopted for all elements (objects, classes, functions, constructors) built into the language.
+
+However, before using one of the built-in objects, remember to check if it actually is an object, or if it’s maybe a class from which you will create an object of a specific type.
+
+In this module, we will take a closer look at a few selected objects, which are probably the most commonly used in everyday JavaScript practice. At the same time, at this stage of learning, they are also the easiest to understand.
+
+We’ve already encountered some of these objects (checking the current date is one example), and others will be introduced later in the course (such as Promise).
+
+A complete list can be found on the pages of the MDN Web Docs1.
+
+By the way, we highly recommend that you take a look at this website. Consider it a basic source of information about JavaScript, which will help you not only during this course, but also after it is finished.
+
+
+What you have learned so far will help you to understand what the built-in objects make available to us, and how.
+
+Using methods and properties, creating objects, checking their types and instances – all of this should not cause you the slightest problem. It will also be important to distinguish between static and prototype methods and properties (or in other words, methods and properties of instances).
+
+We talked about the difference between such methods in the chapter on classes. It’s worth recalling here some basic facts about this topic. If there was a method in the class definition, it was normally a prototype method or an instance method. This method was available in a class-based object.
+
+That is what classes are for, right?
+
+However, if we preceded the declaration of the method with the keyword static, we indicated that it was to be treated as static, and we would not find it in the resulting object.
+
+1Standard built-in objects
+
+Let’s go back to the example from the previous module:
+
+class AlmostEmptyClass { 
+ 
+    constructor(sth) { 
+        console.log(sth); 
+    }; 
+ 
+    sayHi() { 
+        console.log("Hi!") 
+    }; 
+ 
+    static sayHello() { 
+        console.log("Hello!") 
+    }; 
+ 
+}; 
+ 
+let almostEmptyObject = new AlmostEmptyClass(120); // 120 
+almostEmptyObject.sayHi(); // -> Hi! 
+almostEmptyObject.sayHello(); // error
+AlmostEmptyClass.sayHello(); // -> Hello!
+
+We won’t go through the whole example again here – one glance should be enough for you to remember what it was all about.
+
+If you still have any doubts, go back to the explanations in the previous chapter before moving on.
+
+Why is the distinction between static and prototype fields so important to us?
+
+Because most of the built-in objects we are discussing will use both.
+
+Without understanding this difference, you will have a problem with both the documentation describing the selected objects and their correct use.
+
+Let's take a look, for example, at the Number constructor, which is used to create objects that are wrappers for number primitives (we’ll discuss it further in this chapter).
+
+let n = new Number(100.123);
+let fixed = n.toFixed(2);
+let test1 = Number.isInteger(100);
+let test2 = n.isInteger(100); // -> n.isInteger is not a function
+
+In our example, we create the object n, using the Number constructor (we pass 100.123 to it).
+
+In the Number documentation, we’ll find information stating that it contains the toFixed method, which returns a string with our number using fixed-point notation (we specify the number of digits after the decimal point we are interested in).
+
+It is a prototype method (or instance method).
+
+So we use it by using the object created by the Number constructor.
+
+Hence, in the second line of the example, n.toFixed(2) appears.
+
+The method works on a particular object, and operates on its properties, in our case on the value 100.123.
+
+In the same documentation, we can find information about another method, this time static: isInteger.
+
+This method allows us to test if the number is an integer.
+
+It is a static method, so it is connected not with the created object (instance) but with the constructor (or in other cases, with the class).
+
+So the method does not work on the object.
+
+It uses only the value passed as an argument of the call.
+
+Let’s divide the objects discussed in this chapter into three groups. Our division is arbitrary, and does not stem directly from either the documentation or the way they are implemented. We are rather guided here by the usability of the objects, so don’t be surprised if you look at other materials about built-in objects and find a different classification.
+
+The first group are objects representing simple data types:
+
+Boolean
+Number
+String
+Date
+The second group includes objects representing composite data types:
+
+Array
+Set
+Map
+Object
+The third group is made up of objects that are not related to data types, but that simplify our everyday work with JavaScript:
+
+JSON
+Math
+RegExp
+As we have already pointed out, this is not a complete overview of the standard built-in objects.
+
+We’ll only get to know a very basic set.
+
+Each of the objects will be discussed from a strictly functional point of view, and this will not be an exhaustive analysis of all available methods and properties.
+
+We’ll focus only on those methods and properties that are either the most useful in practical programming, or that are needed to understand other mechanisms.
+
+If you’re interested in expanding your knowledge in this area, take a look at the MDN pages.
+
+---
+
+3.1 Section 1 – Simple Data Types
+Scroll to begin 
+
+3.1.1 Simple data types
+You already encountered the term data type in the previous part of the course.
+
+In computer programming, all data is of some type.
+
+This type is used to tell the interpreter or compiler how to treat the data.
+
+Most commonly, data types are divided into two categories: simple (or primitive) and composite (or complex).
+
+Simple types contain a single value, which will be interpreted as something like a number or a text.
+
+
+Composite types are usually constructed from simple types, and most often are all kinds of collections (ordered or not).
+
+We’ll now take a look at the basic JavaScript primitive types and their corresponding built-in objects.
+
+
+3.1.2 Primitives and autoboxing
+We have already talked many times about primitives, that is, non-objective data types.
+
+There are a total of seven, but at the moment only three of them are important to us:
+
+boolean,
+number,
+and string.
+Since they are not objects, they have no methods or properties.
+
+The data of each of these types placed in the variables are pure values, stored in the appropriate format in the memory.
+
+However, for each of the primitive data types there is a special constructor in JavaScript (which you can treat as a class), respectively: Boolean, Number, and String.
+
+These are standard built-in objects. The connection between these primitives and their corresponding constructors is relatively simple, but a few words of explanation wouldn’t hurt.
+
+
+Firstly, why do we need such constructors? In fact, we need them just for convenience.
+
+The use of objects and related dot notation is very intuitive and makes the notation of certain operations simple and logical.
+
+
+Let’s look at an example:
+
+
+let strObj = new String("Do bats eat cats?");
+console.log(typeof(strObj)); //-> object
+console.log(strObj.length); // -> 17
+let words = strObj.split(" ");
+console.log(words[0]); // -> Do
+
+In this example, we create the strObj using the String constructor.
+
+We pass a very important question to the constructor, asked by a girl a long time ago: "Do bats eat cats?".
+
+Our object has many useful properties and methods.
+
+Among other things, we can check how many letters this question has – we refer to the length property for this purpose.
+
+Using the split method, we divide our inscription into single words separated by spaces.
+
+We store the result (single words) in the words array, all this using the properties and methods of our object.
+
+The writing is simple and legible, easy to remember. So why use primitives when using objects in their place is so simple and pleasant?
+
+Unfortunately, apart from their undeniable advantages, objects have one serious disadvantage.
+
+They occupy incomparably more memory space than primitives.
+
+So we come to the next question: if objects are convenient, yet primitives save memory, which ones should we use?
+
+It turns out that the answer is: both of them. And what is even stranger: at the same time.
+
+Let’s look at another example:
+
+
+let str = "Do bats eat cats?";
+console.log(typeof(str)); //-> string
+console.log(str.length); // -> 17
+let words = str.split(" ");
+console.log(words[0]); // -> Do
+
+This time we directly assign the string "Do bats eat cats?" to the str variable.
+
+This variable contains a primitive rather than an object, which we check with typeof.
+
+And now a small surprise – despite the fact that our variable does not contain an object, we successfully refer to the length and split fields, which we know from the String object.
+
+How can this happen?
+
+The JavaScript engine is responsible for this.
+
+When using dot notation, we indicate that we will want to use some method or property of a primitive (which does not have any property nor any property of its methods) and the engine converts it in flight to the corresponding object.
+
+The temporary object is kept in the memory only until the operation is completed, after which the JavaScript engine releases it.
+
+Such an operation obviously has an impact on the engine's performance, but the memory we save in this way is worth it. This behavior of the JavaScript engine is called autoboxing.
+
+
+  Note   Use primitives. Do not explicitly create objects using Boolean, Number, or String constructors. Of course, it is possible to create such objects, as we have shown in the previous example, but it is not recommended. You can rely on the JavaScript engine to recognize when you want to treat a primitive as an object and enable you to do so by performing the appropriate conversion on the fly.
+3.1.3 Boolean
+We will start with one of the simplest built-in objects, the simplicity of which will allow us to organize a few facts related to the subject we’re discussing.
+
+Boolean is a constructor, which is a function that allows you to create objects.
+
+It corresponds to the boolean primitive.
+
+Like all constructors associated with primitives in JavaScript, Boolean can be used in several ways.
+
+First of all, it can be used without our knowledge during autoboxing, when the primitive logical value is converted on the fly to the corresponding object.
+
+We can also explicitly use the constructor to create a new object using the new operator.
+
+In this case, we should provide a boolean (logical) value as an argument to the constructor, which will be stored in the object (if we don't provide an argument, the object will store false by default).
+
+Boolean has no static properties and methods.
+
+It also does not have prototype properties.
+
+To be honest, we don’t find too many prototype methods here either.
+
+There are only two of them: toString and valueOf.
+
+The first one returns a logical value placed in an object in the form of a character string, while the second one will return the same value, but in the form of a primitive boolean (that is false or true).
+
+Let's go to the example below:
+
+
+let boolObj1 = new Boolean;
+let boolObj2 = new Boolean(true);
+let str1 = boolObj1.toString();
+let bool2 = boolObj2.valueOf();
+console.log(`str1 : ${typeof str1} : ${str1}`); // -> str1 : string : false
+console.log(`bool2 : ${typeof bool2} : ${ bool2}`); // -> bool2 : boolean : true
+
+Using the Boolean constructor and the new operator, we create two objects: boolObj1 and boolObj2.
+
+When creating the first one, we don’t provide the argument to the constructor, so it will contain the default value false.
+
+The second object contains the value true passed explicitly to the constructor.
+
+Using the toString and valueOf methods, we retrieve the values placed in these objects (in the form of character strings and logical values respectively).
+
+Of course, we can do a similar test using autoboxing.
+
+The example may not be the smartest, but it is difficult to design something highly sensible with only two such simple methods.
+
+So let's get carried away by the fantasy and assume that picking a value from a variable containing a boolean primitive using the valueOf method makes sense.
+
+At the moment, we are only trying to demonstrate the mechanism itself.
+
+Look at the code below:
+
+
+let bool1 = false;
+let str1 = bool1.toString();
+let bool2 = bool1.valueOf();
+console.log(`str1 : ${typeof str1} : ${str1}`); // -> str1 : string : false
+console.log(`bool2 : ${typeof bool2} : ${ bool2}`); // -> bool2 : boolean : false
+
+In the variable bool1 we have placed a primitive data type – the logical value false.
+
+By trying to use the toString and valueOf methods, we force the JavaScript engine to temporarily convert this primitive to a Boolean class object.
+
+There is another way to use the Boolean. We can call the constructor without the new operator.
+
+What will we achieve in this way? The constructor function will not create a new object, but will only convert the submitted argument into a primitive logical value that it will return.
+
+Look at the code below:
+
+
+let bool1 = Boolean(false);
+let bool2 = Boolean(1);
+let bool3 = Boolean("");
+console.log(`bool1 : ${typeof bool1} : ${bool1}`); // -> bool1 : boolean : false
+console.log(`bool2 : ${typeof bool2} : ${bool2}`); // -> bool2 : boolean : true
+console.log(`bool3 : ${typeof bool3} : ${bool3}`); // -> bool3 : boolean : false
+
+In the example, we’ve successively converted the false, 1 and "" arguments to logical values. While the first case is rather obvious, the other two may require a word or two of clarification.
+
+In JavaScript, the following values are treated as false: false (which probably is not a surprise), null, undefined, NaN (not a number), "". (empty string), 0 (the number zero), -0 (the number negative zero), 0n (BigInt zero), -0n (negative BigInt zero).
+
+All other values will be treated as true, hence the results obtained in the example.
+
+
+As you can see, Boolean is an extremely simple case and, frankly speaking, apart from being used for conversion, it is of little use.
+
+Of course, we are not talking about the usefulness of logical types as such, but about the explicit use of the Boolean constructor and its two methods.
+
+3.1.4 Number
+The Number constructor is associated with the number primitive and represents floating-point numbers (in double-precision 64-bit binary format).
+
+Before we move on to discuss this constructor, let's recall some facts about the number primitive (these were discussed in the first, basic part of the course).
+
+A few words about JavaScript numbers
+The floating-point format allows you to store integers and real numbers (in many programming, languages you distinguish between these types of numbers, while in JavaScript they are simply numbers).
+
+This format often results in stored values being approximate.
+
+The range of values is limited (i.e. you cannot store numbers outside the limit range).
+
+For integers, by default, the smallest value is -(253 – 1) and the largest (253 – 1).
+
+In fact, it is possible to write down numbers outside this range, but the calculations made on them are so imprecise that they are unlikely to be done.
+
+If for some reason we needed to store larger values (e.g. implementing a cryptographic algorithm operating on large prime numbers), we have a BigInt type on hand.
+
+In real life applications, however, it’s used so rarely that we’ll skip it here.
+
+When giving the numerical values, we normally operate with the decimal system, which we are used to in everyday life.
+
+However, by preceding the numerical value with 0x, 0o or 0b, we can tell the JavaScript engine to treat the number as hexadecimal, octal, or binary.
+
+It is also possible to write a number in exponential form, so for example, instead of 9000 we can write 9e3, and instead of 0.00123 we can write 123e-5.
+
+You’re probably already familiar with these terms, such as decimal, hexadecimal, or exponential representation.
+
+Let’s look at an example:
+
+
+let a = 10; // decimal - default
+let b = 0x10;   // hexadecimal
+let c = 0o10; // octal
+let d = 0b10; // binary
+console.log(a); // -> 10
+console.log(b); // -> 16
+console.log(c); // -> 8
+console.log(d); // -> 2
+let x = 0.3;
+let y = 0.6;
+console.log(x + y); // -> 0.8999999999999999
+console.log((x + y).toFixed(1));    // -> 0.9
+console.log(x / 0);      // -> Infinity
+console.log(x / "abc");  // -> NaN
+
+The first part of the code is a few lines showing how we write numbers in formats other than decimal.
+
+Note that when retrieving a value, you always get it in the decimal format. A slightly more interesting piece of code concerns approximations in stored real values.
+
+The variables x and y, although they look straightforward to us (decimal representations), are stored in the memory as binary floating-point numbers.
+
+This format, while it’s convenient for a computer, makes some values impossible to store without small approximations. The effect of this is visible after adding both variables together. In such a situation, one of the methods of the Number object, toFixed (we’ll go through it in more detail in a moment) can help us.
+
+It allows us to round the result to a certain number of decimal places. At the end of the example, there are two other values associated with the number type: Infinity and NaN (not a number). The first one can be generated as a result of arithmetic operations that will cause the number range to be exceeded.
+
+The second value informs us that although the result of a certain operation should be a numerical value, it is not possible to determine the correct output value due to incorrect input data.
+
+3.1.5 The Number constructors
+After this short digression, let us return to the main topic, the standard built-in Number object.
+
+It is a constructor that can be used implicitly during autoboxing, in an attempt to treat the primitive number as an object.
+
+We can also use it to explicitly create an object using the new operator, although like in the case of Boolean (and other constructors corresponding to primitives) this is not recommended.
+
+If a constructor call is not preceded by the new operator, it will only be used to convert the given argument to a number (the value returned will be the primitive).
+
+For a complete list of methods and properties of the Number constructor, including descriptions and examples, see the MDN2.
+
+Just like in Boolean, we also have the toString and valueOf methods.
+
+Their operations are similar, and there is only one small difference: the toString method can accept an argument – a number that specifies in which format the value stored in the object is to be returned. For example, the argument 16 will cause the returned string to be a hexadecimal representation (the argument 8 is an octal representation, etc.). If we don’t provide any argument, the default decimal representation is returned.
+
+2Number - a primitive wrapper object
+
+
+Let’s look at some simple examples:
+
+
+let nrStr1 = (11).toString();
+let nrStr2 = (11).toString(16);
+console.log(`nrStr1 : ${typeof nrStr1} : ${nrStr1}`); // -> nrStr1 : string : 11
+console.log(`nrStr2 : ${typeof nrStr2} : ${nrStr2}`); // -> nrStr1 : string : b
+
+In the first line of the code, we treat the number 11 as an object, trying to call the toString method.
+
+We put the number in parentheses, otherwise JavaScript would treat the dot of the dot notation as the beginning of the fractional part.
+
+This is an example of autoboxing.
+
+The JavaScript engine converts a number on the fly to a corresponding Number type object, and then calls the toString method.
+
+Since we haven’t provided an argument to the called method, the string with the default representation of our number (decimal) is returned.
+
+The second line does the same, only this time toString receives the argument 16, meaning that it should return the hexadecimal representation of our number 11, that is, b.
+
+In the next example, we explicitly declare several objects using the Number constructor. Remember: this example is strictly didactic (we should not use Number in this way).
+
+
+let numberObj1 = new Number;            // -> 0
+let numberObj2 = new Number(100);       // -> 100
+let numberObj3 = new Number("200");     // -> 200
+let numberObj4 = new Number("abcd");    // -> NaN
+let numberObj5 = new Number(9e10000);   // -> Infinity
+console.log(`numberObj1 : ${typeof numberObj1} : ${ numberObj1.valueOf()}`); // -> numberObj1 : object : 0
+
+Pay attention to what values are stored in different objects depending on the argument given to the constructor. In the example, only the value of the numberObj1 object is displayed.
+
+Try to do the same for the other four objects.
+
+The next example demonstrates the use of the Number constructor without the new operator, that is, using it only to convert the argument to a primitive number.
+
+
+let nr = Number("100");
+console.log(`nr : ${typeof nr} : ${ nr}`); // -> nr : number : 100
+
+Try to repeat the conversion in the same way for the arguments from the previous example, that is: "200", "abcd" and 9e10000.
+
+3.1.6 Converting numbers into different string formats
+The set of prototype methods of Number is not limited to valueOf and toString.
+
+We still have, among others, the following:
+
+toExponential(fractionDigits)
+toFixed(digits)
+toLocaleString([locales [, options])
+The first of these methods returns a string representing a number in exponential form, with one digit before the comma, rounded to fractionDigits after the comma.
+
+The argument may be omitted.
+
+
+let a = 12345;
+console.log(a.toExponential());   // -> 1.2345e+4
+console.log(a.toExponential(1));  // -> 1.2e+4
+
+The toFixed method returns a string representing a number rounded to digits decimal places.
+
+Rounding is performed according to the generally accepted convention, i.e. from 5 upwards to below 5 downwards.
+
+Remember, however, that numbers are stored in an imprecise format, which can sometimes lead to surprising results.
+
+let nr1 = 10.55;
+console.log(nr1.toFixed(1)); // -> 10.6
+console.log(nr1.toFixed(0)); // -> 11
+console.log(nr1.toFixed(3)); // -> 10.550
+let nr2 = 2.55;
+console.log(nr2.toFixed(1)); // -> 2.5
+console.log(nr2.toFixed(20)); // -> 2.54999999999999982236
+console.log(((nr2 * 10).toFixed(0) / 10)); // -> 2.6
+
+In the first case, the rounding off of the number stored in variable nr1 is carried out as we expect. The result of the second rounding is due to the imprecise representation of the number 2.55 in the memory.
+
+An interesting method is toLocaleString.
+
+Similar to toString, it returns a string representing a number stored in a Number object, but this time the string will be formatted according to the convention of the selected language.
+
+What is the point of using this method? Depending on the region we are in and the language we use, the numbers are presented in different ways.
+
+This is not just about different digits.
+
+A typical example is the separation of fractional digits – in some regions a dot is used for this, in others a comma.
+
+In the JavaScript code we use a dot for this purpose but, for example, when converting a number into a string that we want to display on our site, we may want to present it according to local rules.
+
+If we do not provide the locales argument, the language set in your operating system configuration will be used in the conversion.
+
+In addition to the locales argument, you can provide additional options to modify the format.
+
+
+let nr = 123456.789;
+console.log(nr.toLocaleString("en-GB")); //-> 123,456.789
+console.log(nr.toLocaleString("fr-FR")); //-> 123·456,789
+console.log(nr.toLocaleString("de-DE")); //-> 123.456,789
+console.log(nr.toLocaleString("ar-EG")); //-> ١٢٣٬٤٥٦٫٧٨٩
+console.log(nr.toLocaleString("es-ES");
+    style: "currency",
+    currency: "EUR"
+})); //-> 123.456,79 €
+console.log(nr.toLocaleString());
+
+In the example, the operation of the toLocaleString method is tested with the value 123456.789 and presented in the following formats: "en-GB" (British English), "fr-FR" (French Standard), "de-DE" (German Standard), "ar-EG" (Egyptian Arabic) and "es-ES" (Castilian Spanish). In the last line we called the method without arguments, so the format of the displayed number will depend on the local configuration of your operating system.
+
+3.1.7 Static properties and methods of the Number constructor
+The Number constructor is not only equipped with prototype methods, but it also provides us with several properties and static methods.
+
+Among the more important properties, we find MAX_VALUE, MIN_VALUE, MAX_SAFE_INTEGER and MIN_SAFE_INTEGER.
+
+
+Console.log(Number.MAX_VALUE); // -> 1.7976931348623157e+308
+console.log(Number.MIN_VALUE); // -> 5e-324
+console.log(Number.MAX_SAFE_INTEGER); // -> 9007199254740991
+console.log(Number.MIN_SAFE_INTEGER); // -> -9007199254740991
+
+The MAX_VALUE property is the maximum value that can be stored using the number type.
+
+However, you should treat this value more as a curiosity, as all values above MAX_SAFE_INTEGER are saved with increasing approximation errors.
+
+The safe range is limited from below by MIN_SAFE_INTEGER.
+
+The MIN_VALUE value is the smallest positive fractional value that can be saved with the number type.
+
+Static methods allow us to check, among other things, whether a value is an integer, whether it is a finite number, whether it is within the safe range of integers, and so on.
+
+
+let numbers = [2e100, 200000, 1.5, Infinity];
+for(let i=0; index< numbers.length; index++) {
+    console.log(`is ${numbers[i]} Integer: ${Number.isInteger(numbers[i])}`);
+    console.log(`is ${numbers[i]} safe Integer: ${Number.isSafeInteger(numbers[i])}`);
+    console.log(`is ${numbers[i]} finite number: ${Number.isFinite(numbers[i])}`);
+}
+
+In the example, we have created a numbers array in which we have placed the values 2e100, 200000, 1.5, and Infinity.
+
+In the for loop, we go through the array, testing each of the values using the static isInteger, isSafeInteger, and isFinit methods. The result should look like this:
+
+
+is 2e+100 Integer: true
+is 2e+100 safe Integer: false
+is 2e+100 finite number: true
+is 200000 Integer: true
+is 200000 safe Integer: true
+is 200000 finite number: true
+is 1.5 Integer: false
+is 1.5 safe Integer: false
+is 1.5 finite number: true
+is Infinity Integer: false
+is Infinity safe Integer: false
+is Infinity finite number: false
+
+Two further static methods, parseInt and parseFloat, can be useful when converting numerical values written up as strings.
+
+Why use them if the Number constructor used without the new operator does the same?
+
+Well, because they can forgive some mistakes in the string format.
+
+They’ll work correctly if at least the initial fragment of the input string can be interpreted as a number (the rest of the string will be ignored).
+
+The Number constructor will consider the same case to be an error and return the NaN value.
+
+
+console.log(Number.parseFloat("123.12.12")); // -> 123.12
+console.log(Number("123.12.12")); // -> NaN
+console.log(Number.parseInt("1204px")); // -> 1204
+console.log(Number("1204px")); // -> NaN
+
+The JavaScript language was not invented for complex mathematical calculations.
+
+Of course, it is possible to perform any arithmetic operations in it, and the Math object (more about which soon) provides many slightly more advanced mathematical functions.
+
+However, there is no need to make life harder for yourself – in this area, JavaScript gives way to languages such as Python, which were created to solve scientific problems.
+
+This should not worry us too much, however.
+
+Tasks that are solved in the real world of JavaScript rarely require the use of serious mathematical instruments.
+
+You will never feel the limitations of language in this matter, and the Number constructor will most often use it to convert data.
+
+3.1.8 String
+We have finally arrived at something really practical.
+
+The String constructor, as we are talking about it, corresponds to the string primitive and allows for comfortable manipulation of character strings.
+
+This object gives us a rich set of prototype methods, of which we will only discuss a certain part.
+
+A complete list of methods and properties of the String constructor, together with descriptions and examples, can be found on the MDN page3.
+
+3The String – object used to represent and manipulate a sequence of characters.
+
+
+3.1.9 What we already know about strings
+We discussed the string primitive in the first part of the course, but let us, in any case, refresh our memories.
+
+In JavaScript, strings contain any characters enclosed in double quotes, single quotes or backticks (or grave accents).
+
+These methods can be seen as alternatives to each other. The last one allows the use of placeholders inside the string.
+
+Strings containing a placeholder will be called template literals. The placeholder allows you to dynamically insert the values of variables into the selected place of the string at runtime.
+
+
+let delay = 10;
+let name = "Bob";
+let order = 'pizza';
+let info = `Hi ${name}, you have to wait about ${delay} minutes for your ${order}`;
+console.log(info); // -> Hi Bob, you have to wait about 10 minutes for your pizza
+console.log(typeof name); // -> string
+console.log(typeof order); // -> string
+console.log(typeof info); // -> string
+
+The example shows the use of double quotes, single quotes and backticks when creating strings, with template literals being used when declaring the info variable.
+
+This declaration is the more convenient form of the anotherInfo variable declaration shown below:
+
+
+let anotherInfo = "Hi " + name + ", you have to wait about " + delay + " minutes for your " + order;
+If a character string is to contain one of the characters that are used to specify the string (", ' or `), an escape character, that is \ (backslash), may be used.
+
+This will cause the character that follows it to be treated as part of the string, rather than as a control character (normally interpreted as the end of the string, for example).
+
+You can also use an alternative character. For example, if you want a double quote to appear inside a string, you can use a single quote to specify the string.
+
+
+let warn2 = "Confirm ticket reservation for \"Alien 10\" movie.";
+let warn1 = 'Confirm ticket reservation for "Alien 10" movie.';
+let warn2 = "Confirm ticket reservation for 'Alien 10' movie.";
+let warn3 = `warning: "Confirm ticket reservation for 'Alien 10' movie."`;
+
+3.1.10 The String constructor
+Let's go back to the String constructor.
+
+Similar to the Boolean and Number, it is used, among others, during autoboxing (i.e. when trying to treat the string primitive as an object).
+
+We can also use it explicitly to create a new object (again, this is not recommended, remember why?) and to convert other primitives to string.
+
+We’ll start by discussing the constructor with the only prototype property it has.
+
+This is the length property and, as you can guess, it tells us about the number of characters in the string stored in the object.
+
+
+let name = "Bob";
+console.log(name.length); // -> 3
+console.log("Alice".length ); // -> 5
+console.log("".length ); // -> 0
+
+The concept of this property is so simple that it hardly needs any further explanation.
+
+There are, however, two things to note. First of all, in many programming languages, the length of a string is obtained using a function, not a property, so people who have already learned a bit of programming are often mistaken here. The second problem is not strictly about the length property, but about a certain logical error.
+
+For example, it is often tested whether the length of a string is different from zero to display it.
+
+However, it would be advisable to first check whether the variable we are testing contains a string or any other value before trying to refer to the length field.
+
+This is what we do in the following example, using the logical OR operator (&& characters).
+
+
+let strings = [undefined, "", "ab", "cd ef", 4, null];
+for(let i=0; i< strings.length; i++) {
+    strings[i] && strings[i].length && console.log(strings[i]);
+}
+
+We have placed six elements in the strings array, of which only three are strings, and of those three, only two are longer than zero.
+
+So only 'ab' and 'cd ef' will be displayed.
+
+The console.log(strings[i]) command will be executed under two conditions:
+
+the specific element in the array is not equal to null or undefined (strings[i] command),
+the element there has a length property, which is different from zero (strings[i].length command).
+By the way, in the example we also used the length property of the strings array.
+
+So we see some repetition in the naming schemes in JavaScript, which should make it easier for us to remember them.
+
+3.1.11 String as an array of characters
+As long as we are at the arrays, the string can be treated as a character array.
+
+Since it is an array, we should theoretically be able to refer to individual characters by means of an index (position) and square brackets.
+
+And indeed we can.
+
+The same effect can be achieved with the charAt prototype method.
+
+Take a look at the example below:
+
+
+let title = "Alien 10";
+console.log(title[0]); // -> A
+console.log(title.charAt(0)); // -> A
+
+Using square brackets, we have indicated the first letter (index 0) of the string stored in the title variable.
+
+We repeat the same thing using the charAt method.
+
+3.1.12 Case conversion
+Two often-used methods are toLowerCase and toUpperCase.
+
+It is easy to guess what we are using them for.
+
+In this example we will use them to observe a certain phenomenon.
+
+Take a look at the example below:
+
+
+let ipAddressStr = "127.0.0.1"
+let ipParts = ipAddressStr.split("."); // -> ["127", "0", "0", "1"]
+console.log(ipParts[0]); // -> 127
+
+We store a string in the title variable and then try to refer to it as if it were an object by calling the toUpperCase method.
+
+We already know that the JavaScript engine will automatically convert the string to the appropriate object and the called method will return a string converted into capital letters.
+
+Of course, calling the method does not affect the contents of the title variable, as it is treated only as a source of data from which a new string will be returned.
+
+The same happens when you explicitly create an object using the String constructor and call the toLowerCase method on it.
+
+The method will return a lowercase string, but the contents of the object (the original string) will not change.
+
+
+  Note   The prototype methods of the String constructor do not modify the original string but return a modified copy of it. The same is true of many of the Array's constructor methods. If you are not 100% sure whether a method modifies the contents of an object or returns a modified copy, consult the documentation.
+
+3.1.13 Splitting the string
+One method that may come in handy is split, by means of which the string can be split into fragments (substrings), which will be returned as an array.
+
+As an argument, we give the string which is to be treated as a separator.
+
+This method does not affect the original string.
+
+Take a look at the example below:
+
+
+let ipAddressStr = "127.0.0.1"
+let ipParts = ipAddressStr.split("."); // -> ["127", "0", "0", "1"]
+console.log(ipParts[0]); // -> 127
+
+In the example, we split the IP address, stored in the form of a string, into four parts.
+
+When calling the split method, we pass a string containing the dot as an argument, thus indicating how these parts are separated from each other.
+
+The parts are stored in the ipParts array.
+
+3.1.14 Replacing substrings
+Let’s look at the next useful method, replaceAll, which allows you to replace a selected string of characters with another one we have provided.
+
+Again, we do not modify the original string, but treat it as a source.
+
+Using the split method and the new replaceAll method, we will demonstrate method chaining.
+
+
+let text = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin nibh augue, suscipit a, scelerisque sed, lacinia in, mi. Cras vel lorem. Etiam pellentesque aliquet tellus. Phasellus pharetra nulla ac diam.";
+let words = text.toLowerCase().replaceAll('.','').replaceAll(',','').split(' ');
+console.log(words.length); // -> 30
+
+In the example, we put a few sentences from the timeless Lorem ipsum in the text variable.
+
+By calling toLowerCase, we change all capital letters into lower case. However, the result is not stored in any variable or displayed on the screen.
+
+After calling toLowerCase, a dot appears immediately, and the next method replaceAll is called.
+
+This means that the result obtained from toLowerCase will be processed by replaceAll, and so on.
+
+We could therefore present this one line of code in the following form:
+
+
+let a = text.toLowerCase();
+let b = a.replaceAll('.','');
+let c = b.replaceAll(',','');
+let word = c.split(' ');
+
+You will probably agree that such a notation is unnecessarily extensive and inelegant. You should note that the variable text and the intermediate results returned by toLowerCase or replaceAll are strings.
+
+Treating them as objects (i.e. the ability to call String constructor methods) is possible thanks to autoboxing.
+
+
+  Note   Method chaining (or cascading) is calling one method after another in one line of code. The methods are called in order from left to right. Each subsequent method is executed on the result of the previous method. The methods do not have to be of one object type.
+
+However, let’s go back to the replaceAll and split methods.
+
+The first call of replaceAll searches for a string consisting of a single dot and turns it into an empty string, that is, we simply remove all dots from the input string.
+
+The second call of replaceAll removes the commas in the same way.
+
+The result is treated by the split method. We pass a string consisting of one space to it as an argument.
+
+This argument is interpreted as a separator. The string resulting from the last replaceAll will be split into sections separated by spaces.
+
+The split method will return an array that will include these single words. At the end, we check the length of the received array.
+
+It turns out that it is 30 – this is the number of words that contain the fragment "Lorem ipsum".
+
+A similar method, replace, differs from replaceAll in that it changes not all, but only the first match.
+
+3.1.15 Searching for substrings
+Some of the most useful methods of the String constructor are includes, indexOf, and lastIndexOf.
+
+They allow you to check if there is a certain substring inside of the string.
+
+The include method only returns information about whether such a substring (given as an argument of the method call) has been found.
+
+The indexOf method, if successful, will return the position of the first occurrence of the selected substring (it can occur many times).
+
+As you can guess, lastIndexOf will return the position of the last matched substring.
+
+Remember that we treat a string as an array, so the first character has the position 0 (array indexing starts with 0).
+
+The indexOf and lastIndexOf methods will return a value of -1 if they don't find the specified substring.
+
+Take a look at the example below:
+
+
+let text = "One, two, three, one, two, three.";
+console.log(text.includes("two")); // -> true
+console.log(text.includes("four")); // -> false
+console.log(text.indexOf("two")); // -> 5
+console.log(text.indexOf("four")); // -> -1
+console.log(text.lastIndexOf("two")); // -> 22
+
+This example shouldn’t require any further explanation.
+
+3.1.16 Copying substrings
+Using the substr, substring, and slice methods, we can copy the selected part of the string.
+
+The operation of these methods is very similar, and they differ mainly in the way they interpret the arguments provided to them.
+
+
+let text = "One, two, three, one, two, three.";
+console.log(text.substr(0,8)); // -> One, two
+console.log(text.substr(10)); // -> three, one, two, three.
+console.log(text.substr(-6)); // -> three.
+console.log(text.substr(-6, 2)); // -> th
+
+In the case of the substr method, the first argument is the position of the beginning of the substring to be copied.
+
+The second argument is interpreted as the length of the fragment to copy.
+
+Skipping the second argument means that the fragment from the given position to the end of the string is to be copied.
+
+The first argument, or position, may also be a negative number.
+
+It will then be interpreted as the position counted from the end of the string.
+
+
+console.log(text.substring(5, 8)); // -> two
+console.log(text.substring(5)); // -> two, three, one, two, three.
+console.log(text.substring(-11, 8)); // -> One, two
+
+The substring method also takes the starting position of the substring as the first argument.
+
+If we omit the second argument, the method will work in the same way as the substr, but if we use it, it will be interpreted not as the length, but as the position of the last character of the copied substring in the original string. Unlike substring, a negative value is treated as a zero.
+
+
+console.log(text.slice(0,3)); // -> One
+console.log(text.slice(5)); // -> two, three, one, two, three.
+console.log(text.slice(-11)); // -> two, three.
+console.log(text.slice(-11, -8)); // -> two
+
+The third of these methods, slice, operates on positions, just like substring.
+
+The first argument is the position of the beginning of the substring, and the second is the position of the end.
+
+Skipping the second argument means that the substring is copied to the end of the original string. Both the first and second arguments can be negative.
+
+Such values, like in substr, are interpreted as positions counted from the end of the original string.
+
+3.1.17 Padding
+Among the methods of the String constructor, there are many that are not especially sophisticated, but can make life easier.
+
+These include the padEnd and padStart methods.
+
+They allow you to expand the string to a given size, completing it from the end or from the beginning by repeating the string given as an argument.
+
+The first argument is the maximum length of the output string, the the second argument is the padding.
+
+If we omit the second argument, the spaces will be used for completion by default.
+
+Take a look at the example below:
+
+
+let numbers = [100, 5, 66];
+for(let i=0; i< numbers.length; i++) {
+    console.log(String(numbers[i]).padStart(10, '0'));
+    console.log(String(numbers[i]).padStart(10, 'abc'));
+    console.log(String(numbers[i]).padStart(10));
+}
+
+Executing this code fragment should display the following information in the console:
+
+0000000100
+abcabca100
+100
+0000000005
+abcabcabc5
+5
+0000000066
+abcabcab66
+66
+Output
+
+In a similar way, we would use the padEnd method.
+
+3.1.18 Trimming
+Equally simple and equally useful methods are trim, trimLeft (alias trimStart) and trimRight (alias trimEnd).
+
+They remove whitespace characters (e.g. tabs, spaces, newline characters).
+
+They are particularly useful in cases where we use data submitted by the user into forms on our web application.
+
+An example should be enough to understand their functioning.
+
+Take a look at the code below:
+
+
+let city = " Bergen  ";
+let street = " Dokkeboder";
+console.log(city.trimLeft().length); // -> 8 -> "Bergen  "
+console.log(city.trimRight().length); // -> 7 -> " Bergen"
+console.log(city.trim().length); // -> 6 -> "Berge"
+console.log(street.trim().length); // -> 10 -> "Dokkeboder"
+
+3.1.19 Comparing strings
+Finally, we are left with the comparison of strings.
+
+Comparison can be done with the comparison operators you know, such as <, ==, etc. The result of the comparison will be true or false.
+
+The comparison is, of course, carried out alphabetically, that is, according to the letter order of the alphabet. If the first letters of the strings being compared are the same, the next ones are compared.
+
+
+console.log("a" < "b"); // -> true
+console.log("abc" < "acd"); // -> true
+console.log("b" < "acd"); // -> false
+
+Digits are treated according to their natural order. Remember, however, that in this case we do not compare numbers but strings consisting of characters, which are digits.
+
+
+console.log("4" < "5"); // -> true
+console.log("2" < "12"); // -> false
+console.log("34" < "332"); // -> true
+
+What happens when upper-case letters are used? They are also compared according to their position in the alphabet, with all capitals being treated before the lower-case letters.
+
+
+console.log("brettesnes" < "Sundsfjord"); // -> false
+console.log("Brettesnes" < "Sundsfjord"); // -> true
+
+So far, everything has been working simply, clearly, and pleasantly. However, let's generate a small problem.
+
+
+console.log("Ørnes" < "Sundsfjord"); // -> false
+
+Something must have gone wrong.
+
+We may not know the Norwegian alphabet used in the example, but we intuitively expect the letter Ø to appear before S.
+
+And so it does.
+
+So where does this result come from?
+
+JavaScript does not cope well with special characters from local alphabets when comparing strings in a simple way.
+
+It treats them all as if they were added to the end of the alphabet. What helps us is the localeCompare method.
+
+In the basic version, it can take two arguments.
+
+The first argument is a string for comparison, while the second one, optional, specifies the language (or the de facto alphabet that will be used during the comparison).
+
+If we omit the second argument, our default location written in the operating system configuration will be used (and most often we use this method in this way).
+
+
+console.log("Ørnes".localeCompare("Sundsfjord", "nn")); // -> -1
+console.log("Ørnes".localeCompare("Brettesnes", "nn")); // -> 1
+
+In the example, the second argument is 'nn', meaning Norwegian ('en' English, 'de' German, 'sv' Swedish, 'pl' Polish, etc.).
+
+First we compare "Ørnes" with "Sundsfjord". The result -1 means that the first string comes before the second one (alphabetically).
+
+The comparison of "Ørnes" with "Brettesnes" gives a result of 1, which means that this time the first string comes after the second. The result would be 0 if we compare two identical strings.
+
+If you have looked at the MDN page of the String constructor's description, you have certainly seen that we only discussed a limited number of methods.
+
+However, this is a set that is enough to efficiently deal with strings in everyday practice.
+
+We’ll come back to the String constructor when discussing regular expressions (RegExp).
+
+3.1.20 Date
+The Date constructor, despite its name, also serves to store time, not just dates.
+
+Unlike the Boolean, Number, and String discussed earlier, it does not represent any primitive.
+
+However, it can be regarded as one of the simple types.
+
+Why? Because the value placed in it is a simple number.
+
+This number is a timestamp, which is the number of milliseconds that have passed from a fixed point in time.
+
+In JavaScript, January 1, 1970 00:00:00:00 UTC is used as the zero-point, as in many computer systems.
+
+
+Note that this is UTC (Universal Coordinated Time), referring to the GMT+0 time zone.
+
+This is important because we can be in different time zones and the same timestamp will represent a different local time.
+
+Using time zones and local time can be a bit awkward at first, so let’s try to take a closer look at this subject.
+
+3.1.21 Time zones and other tricks
+We have already said that the Date constructor does not represent any primitive, so we will not use autoboxing in this case.
+
+We must explicitly create the Date object using the operator new.
+
+The constructor can be given arguments in different formats. The simplest method is to pass the timestamp, which is the number of milliseconds from the zero-point.
+
+This method is not overly practical, as it is hard to imagine that we will convert time into milliseconds each time.
+
+However, it is ideal for explaining the basic concept of Date.
+
+For simplicity's sake, imagine that we are in the UTC+0 (or GMT+0) time zone, e.g. Iceland. We are sitting comfortably in a café in Reykjavík, we order cake and strong coffee, and get down to working on the Date constructor.
+
+Look at the code below:
+
+
+let date1 = new Date(0);
+let date2 = new Date(1000*60*60*10);
+console.log(date1.toUTCString()); // -> Thu, 01 Jan 1970 00:00:00 GMT
+console.log(date2.toUTCString()); // -> Thu, 01 Jan 1970 10:00:00 GMT
+
+We have provided the date1 object with a timestamp 0, which will be the zero-point.
+
+We have inserted a value of 3600000000 into date2, which is the number of milliseconds corresponding to 10 hours.
+
+Using the prototype method toUTCString, we retrieve the date and time as a string of characters.
+
+This method returns UTC+0 time, as you can see from the GMT shortcut ending the string.
+
+Let's do another experiment – look at the code below:
+
+
+console.log(date2.getTimezoneOffset()); // -> 0
+console.log(date2.toLocaleString()); // -> 01/01/1970, 10:00:00
+console.log(date2.toISOString()); // -> 1970-01-01T10:00:00.000Z
+console.log(date2.toUTCString()); // -> Thu, 01 Jan 1970 10:00:00 GMT
+
+In the first step, we use the getTimezoneOffset method, which returns the time difference (in minutes) between the UTC+0 zone and the zone we are currently in (this information is taken from our operating system configuration).
+
+This difference is calculated for a specific date (in this case January 1st, 1970) for several reasons, for example because in some places in the world, different time is used in winter and in summer.
+
+Reykjavík is in the UTC+0 zone, so the difference is 0. Then we call the toLocaleString method.
+
+As you can guess, it returns a string with the time that is stored in date2:
+
+the time is formatted according to the language set as local in our operating system (in the example, it is English. The German format, for example, would look like this: 01.01.1970, 10:10:00),
+this is the local time (adjusted to our time zone).
+In the following steps, we take the same time from date2 in ISO and universal formats, using the toISOString and toUTCString methods respectively.
+
+Both methods always return the time for the UTC+0 zone.
+
+Since we are in the UTC+0 zone, the time returned by all three methods is identical.
+
+Let’s now teleport ourselves to a bar in Berlin.
+
+While in a different time zone, let’s do the same experiment again.
+
+Look at the code below:
+
+
+console.log(date2.getTimezoneOffset()); // -> -60
+console.log(date2.toLocaleString()); // -> 01/01/1970, 11:00:00
+console.log(date2.toISOString()); // -> 1970-01-01T10:00:00.000Z
+console.log(date2.toUTCString()); // -> Thu, 01 Jan 1970 10:00:00 GMT
+
+Firstly, thanks to the getTimezoneOffset method, we find that for the date of 1 January 1970, the difference between the UTC+0 zone and the time zone where Berlin is located is -60 minutes.
+
+This can of course also be seen in the string returned by thisLocaleString – instead of 10 o'clock, we get 11 o'clock.
+
+The toISOString and toUTCString methods, as always, return the time for UTC+0, which is 10 o'clock.
+
+So now what is the effect of this experiment on your time zone?
+
+Operating with milliseconds when creating a Date object is usually impractical, and so more often the date is given as a string, or split into single values such as year, month, etc.
+
+The time thus provided to the constructor is treated as local by default, unless we explicitly state otherwise.
+
+Let's look at an example below where we create the Date object by passing the time in the ISO 8601 string format.
+
+
+date3 = new Date("2020-02-02T20:20:00.000");
+date4 = new Date("2020-02-02T20:20:00.000Z");
+console.log(date3.toLocaleString()); // -> 02/02/2020, 20:20:00
+console.log(date3.toISOString()); // -> 2020-02-02T19:20:00.000Z
+console.log(date3.toUTCString()); // -> Sun, 02 Feb 2020 19:20:00 GMT
+console.log(date4.toLocaleString()); // -> 02/02/2020, 21:20:00
+console.log(date4.toISOString()); // -> 2020-02-02T20:20:00.000Z
+console.log(date4.toUTCString()); // -> Sun, 02 Feb 2020 20:20:00 GMT
+console.log(date3.getTime()); // -> 1580671200000
+console.log(date4.getTime()); // -> 1580674800000
+console.log(date4.getTime() - date3.getTime()); // -> 3600000
+
+Do you see the difference in the strings provided as arguments to the Date constructors when creating the date3 and date4 objects?
+
+The letter Z, added at the end, according to the ISO format, indicates that it is UTC+0.
+
+If it is not, it is local time. And since we haven't finished our next coffee in Berlin yet, so we are still in the UTC+1 time zone (or more precisely, we are in the time zone which was UTC+1 on 2 February 2020).
+
+Using the getTime method, we can take the time from the date3 and date4 objects expressed in milliseconds from the zero-point, that is, the timestamp.
+
+We can see a difference of 3600000 milliseconds, which is one hour.
+
+
+Don't worry if playing with time zones seems a little overwhelming to you.
+
+It just needs a little practice. As a consolation, we can tell you that it is rare for JavaScript to mix universal time (UTC+0) and local time in practice.
+
+Usually in the program, we operate with either one or the other.
+
+3.1.22 Current time
+As we have seen, the Date constructor is used to create objects to store time.
+
+Theoretically, it can also be called without the new operator, which will then return the time in the form of a string (the time given in the argument).
+
+However, such use of the constructor is commonly discouraged because of serious differences in its operation in different browsers.
+
+So always use Date to create an object (with the new operator).
+
+Let's take a look at what arguments our constructor can accept.
+
+
+let nowObj = new Date();
+console.log(nowObj.toLocaleString());
+
+First of all, when we call the Date constructor, we can skip the arguments entirely.
+
+In that case, Date considers that we are referring to the current time.
+
+We can also obtain the current time using the only practical static method of the Date constructor, namely now.
+
+It returns the timestamp for the moment the method is called, which is simply the current time in the form of the number of milliseconds from the zero point.
+
+
+let now = Date.now(); // timestamp
+let nowObj = new Date(now);
+console.log(`now : ${typeof now} : ${now}`);
+console.log(`now : ${typeof nowObj} : ${nowObj}`);
+
+We can pass a number to the constructor, which will be interpreted as a timestamp (we did this in previous examples).
+
+In this example, we get the current timestamp using Date.now, and use it to call the constructor.
+
+If the number provided as an argument is negative, it will be interpreted as the number of milliseconds by which we have to go back before the zero point (that is, before 1970).
+
+3.1.23 Time specification with individual components
+The constructor may also accept the time specified in the form of several numbers, representing successively the year, month, day, hour, minutes, seconds, and milliseconds.
+
+We must provide at least the year and month, while all other missing components will be set to the lowest possible values by default (e.g. day to value 1).
+
+Look at the code below:
+
+
+let date1 = new Date(2020, 6);
+let date2 = new Date(2020, 6, 8);
+let date3 = new Date(2020, 6, 8, 10);
+let date4 = new Date(2020, 6, 8, 10, 20, 45);
+console.log(date1.toLocaleString()); // -> 01/07/2020, 00:00:00
+console.log(date2.toLocaleString()); // -> 08/07/2020, 00:00:00
+console.log(date3.toLocaleString()); // -> 08/07/2020, 10:00:00
+console.log(date4.toLocaleString()); // -> 08/07/2020, 10:20:45
+
+This is a convenient and unambiguous way to specify the date, as you only need to remember a few details:
+
+although the year can be given in abbreviated form (last two digits), this notation is ambiguous and not recommended – use the full year notation (four digits);
+the months are counted from 0 (e.g. the value of 2 corresponds to March);
+the time specified in this way is always interpreted as local (for the time zone we are in).
+3.1.24 Time specification with date string
+The most intuitive way of passing the time to the constructor is the one we use on a daily basis – the date is written in the form of a sequence of characters.
+
+Unfortunately, this is also the most problematic way.
+
+Why? Because there are many formats in which the date and time can be presented, and JavaScript tries to interpret them all at all costs.
+
+In addition, JavaScript completes some of the missing information provided in this form.
+
+It seems to be quite nice and helpful, but it can lead to a situation that with a badly formatted date (e.g. we forgot to give the month) there will not be an error, and JavaScript will try to interpret it in its own way.
+
+Look at the code below:
+
+
+let date1 = new Date("2020-07-08");
+let date2 = new Date("2020-07-08T10:20:00");
+let date3 = new Date("2020-07-08T10:20:00Z");
+
+In the example, we use the ISO 8601 format and this is, in our opinion, the only unambiguous way of giving time in the form of a string.
+
+The format YYYY-MM-DDTHH:mm:ss.sss is simple and legible (year, month, day, hour, minutes, seconds, milliseconds). The time given in this format is always the local time, unless the letter Z appears at the end of the string. Then it is UTC+0.
+
+The following are the calls of the Date constructor, which take strings in different formats as arguments (note that in some cases incomplete information is given).
+
+Look at the code below:
+
+
+let date1 = new Date("Mon Mar 02 2020 10:00:00");
+let date2 = new Date("Mon March 2 2020 10:00");
+let date3 = new Date("Mar 02 2020 10:00:00");
+let date4 = new Date("2 March 2020, 10:");
+let date5 = new Date("3.2.2020");
+let date6 = Date("03/02-2020, 10:00");
+let date7 = new Date("2020, 10:00");
+let date8 = new Date("2020 march-02, 10:00");
+let date9 = new Date("3.2.2020 GMT+0400");
+let date10 = new Date("Mon Mar 02 2020 10:00:00 UTC-4");
+
+The time in the examples is always local, unless it is clearly indicated that it refers to a different time zone using GMT or UTC strings (as in the examples of the date9 and date10 objects).
+
+Try calling up the example above and check the dates you receive using the toLocaleString and toISOString methods.
+
+
+Flexibility in action is usually a good thing, but not necessarily for programming, where clarity is important.
+
+Such a flexible approach to date formats written in the form of strings is not, in our opinion, the best idea.
+
+Try to keep to one format, such as ISO. If necessary, change the format in order to present the date, e.g. to local.
+
+3.1.25 Practical use of a timestamp
+The often-used Date method is presented in one example, getTime, returning a number of milliseconds between the zero point and the time stored in the object.
+
+The same value can be found using the valueOf method that you learned when we looked at the previous constructors.
+
+In the example, we will use the getTime method to check how many milliseconds a day has:
+
+
+let date1 = new Date(2020, 6, 8, 10, 20, 0);
+let date2 = new Date(2020, 6, 9, 10, 20, 0);
+console.log(date2.getTime() - date1.getTime()); // -> 86400000 -> 1000 x 60 x 60 x 24
+
+A more practical way to use the getTime method may be to measure the time it takes to execute a certain piece of code.
+
+Let’s build a simple stopwatch, measuring the start and end times and checking the difference between them.
+
+
+let startTime = Date.now();
+for(i=0; i<10000000; i++){}
+let endTime = Date.now();
+console.log(endTime - startTime);
+
+This time we did not even create Date objects.
+
+Instead, in order to retrieve the current timestamp, we used the static method now.
+
+In the example, we measured how many milliseconds it would take to perform 10 million empty iterations of the for loop.
+
+3.1.26 Operating on individual date and time components
+The Date constructor has a large set of prototype methods to operate on individual components of time stored in a particular object.
+
+For example, we will use one of the following methods to get and change the year:
+
+getFullYear – getting a number identifying the year (local time)
+getUTCFullYear – getting a number identifying the year (time UTC+0)
+setFullYear – setting the new year value (local time)
+setUTCFullYear – setting the new year value (time UTC+0)
+Each of the date components will contain these four methods (two gets and two sets, for local time and UTC).
+
+Next, we’ll only show the methods for the local time components.
+
+You can easily guess the remaining variants by analogy to the getFullYear shown earlier:
+
+year: getFullYear,
+month: getMonth (remember that the months are counted from 0 in JavaScript)
+day of the month: getDate,
+day of the week: getDay (days of the week are counted from 0 – the first day is Sunday)
+hour: getHours,
+minutes: getMinutes,
+seconds: getSeconds,
+milliseconds: getMilliseconds.
+The example below demonstrates the use of several selected methods operating on particular components of time.
+
+
+let date = new Date("2020-07-08T10:20:00");
+console.log(date.getMonth()); // -> 6 
+console.log(date.getDay()); // -> 3
+console.log(date.getDate()); // 8
+console.log(date.getHours()); // -> 10
+date.setHours(12);
+console.log(date.getHours()); // -> 12
+
+They are so simple and intuitive that there is hardly any need to discuss them in more detail.
+
+Apart from the toISOString, toUTCString, or toLocaleString methods we showed you earlier, there are two other useful methods converting the time stored in an object into a string, toLocaleDateString and toLocaleTimeString.
+
+
+let date = new Date("2020-07-08T10:20:00");
+console.log(date.toLocaleDateString()); // -> 08/07/2020
+console.log(date.toLocaleTimeString()); // -> 10:20:00
+
+They allow us to retrieve a string representing either only the local date or only the local time.
+
+More information about the Date constructor and its methods can be found on the MDN4 website.
+
+---
+
+3.2 Section 2 – Composite data types
+Scroll to begin 
+
+3.2.1 Composite data types
+When we talk about composite data types, we mean structures for storing many values of different types in different forms.
+
+These structures differ in the way values are identified, accessed, or organized.
+
+They are practically always dynamic, that is, they allow both the values stored in them and the size of the structure to change.
+
+
+Let’s take a look at several selected composite types available in JavaScript.
+
+
+3.2.2 Array
+The Array constructor is used to create arrays, ordered collections of elements.
+
+An array is a composite data structure, which can contain many elements of different types, and its size and contents can change.
+
+We gain access to particular elements by knowing their successive number in the array (i.e. their index).
+
+
+The basic concept of arrays and their use should be familiar to you from the first part of the course.
+
+3.2.3 Creating an array
+We can create new arrays in many ways. Until now, we have used the literals technique, using square brackets in the declaration.
+
+When we create an array in this way, we refer to the Array constructor implicitly, although nothing stands in the way of us calling it explicitly.
+
+Let’s check this out - look at the code below:
+
+
+let array1 = []; // -> []
+let array2 = [2, 4, "six"]; // -> [2, 4, "six"]
+let array3 = new Array(); // -> []
+let array4 = new Array(2); // -> [undefined, undefined]
+let array5 = new Array(2, 4, "six"); // -> [2, 4, six]
+let array6 = new Array("2"); // -> ["2"]
+console.log(`array2 : ${typeof array2} : ${array2 instanceof Array} : ${array2.length}`); // -> array2 : object : true : 3
+console.log(`array5 : ${typeof array5} : ${array5 instanceof Array} : ${array5.length}`); // -> array5 : object : true : 3
+
+As you can see, we use both techniques successfully to create new arrays.
+
+Let’s take a closer look at the constructor itself.
+
+If we don’t give any argument to the constructor, an empty array will be created (containing zero elements).
+
+Passing exactly one argument, which is a positive number, will create an array of the length this one argument.
+
+All elements in the array will be undefined.
+
+If you specify more arguments, or a single argument that is not a number, the constructor will create an array of the given arguments.
+
+Regardless of whether we have created the array using square brackets, or explicitly using a constructor, we access the individual elements by specifying the element number in square brackets after the array name.
+
+Remember that the elements of an array are indexed from 0.
+
+If we give an index outside the scope of the array, we get an undefined value.
+
+Let's continue with the previous example.
+
+Look at the code below:
+
+
+console.log(array2[0]); // -> 2
+console.log(array5[2]); // -> "six"
+console.log(array5[5]); // -> undefined
+
+The only useful prototype property of the Array constructor is length, with which we can check how many elements our array contains.
+
+We will not find anything particularly interesting here.
+
+However, the set of prototype methods is very extensive. We will choose from them some of the most useful ones.
+
+If you want to take a look at the rest of them, you can find a description on the MDN5 website.
+
+5The Array object
+
+3.2.4 Merging arrays
+Our survey will start with the concat method.
+
+It is used to combine two arrays into one. None of the original arrays is modified.
+
+The method creates a new array consisting of the array elements stored in the object and the attached array elements given as a call argument.
+
+Most Array constructor methods return modified copies of the array, with only a few operating directly on the array in the object.
+
+In the description of each method, we will clearly indicate whether we are operating on the copy or the original.
+
+Look at the code below:
+
+
+let array1 = [10, 20, 30];
+let array2 = ["cat", "dog"];
+let array3 = array1.concat(array2); // -> [10, 20, 30, "cat", "dog"];
+console.log(array1.length); // -> 3
+console.log(array2.length); // -> 2
+console.log(array3.length); // -> 5
+console.log(array3[0]); // -> 10
+console.log(array3[3]); // -> "cat"
+
+As you can see, the method returns a new combined array, which we can, for example, store in a variable.
+
+3.2.5 Adding and removing items – push and unshift
+We can add new elements to an existing array.
+
+This is done using the push (adding elements at the end of the array) and unshift (adding elements to the beginning of the array) methods.
+
+Both methods accept any number of arguments that are interpreted as new elements.
+
+Both methods modify an existing array (i.e. they work in place).
+
+Look at the code below:
+
+
+let array1 = [10, 20, 30]; // -> [10, 20, 30]
+array1.push(100); // -> [10, 20, 30, 100]
+array1.push(50, "dog"); // -> [10, 20, 30, 100, 50, "dog"]
+array1.unshift("cat", 90, 80); // -> ["cat", 90, 80, 10, 20, 30, 100, 50, "dog"]
+
+3.2.6 Adding and removing items – pop and shift
+We also have the pop and shift methods.
+
+They are called without arguments, and each of them removes one element from the array (pop from the end of the array, shift from the beginning).
+
+Both methods return the removed element, which we can, for example, store in a variable or, as in this particular example, display on the console.
+
+Look at the code below:
+
+
+console.log(array1.length); // -> 9
+console.log(array1.shift()); // -> cat
+console.log(array1.length); // -> 8
+console.log(array1.pop()); // -> dog
+console.log(array1.length); // -> 7
+
+3.2.7 Adding and removing items without using methods
+We can also add a new element without using methods by simply referring to a non-existent array index.
+
+Space in the array between the last existing element and the newly inserted element will be filled with undefined elements if necessary.
+
+We can also delete the selected element using the delete command you know from the objects (this is not the Array constructor method!).
+
+The place left after the deleted element will contain undefined.
+
+Look at the code below:
+
+
+let array1 = [10, 20, 30]; // -> [10, 20, 30]
+array1[3] = 100; // -> [10, 20, 30, 100]
+array1[5] = 1000; // -> [10, 20, 30, 100, undefined, 1000]
+delete array1[1]; // -> [10, undefined, 30, 100, undefined, 1000]
+console.log(array1[1]); // -> undefined
+
+3.2.8 Walking through the array elements
+One of the most frequently used methods of the Array constructor is forEach, which allows us to go through all elements of the array.
+
+This is an elegant alternative to the ordinary for loop, which we used for this purpose before.
+
+Let's take a look at an example that uses the for loop:
+
+
+let array1 = ["cat", 90, 80, 10, 20, 30, 100, 50, "dog"];
+for(let index=0; index< array1.length; index++) {
+    console.log(`${index} : ${array1[index]}`); // -> 0 : cat -> 1 : 90 -> 2 : 80 -> 3 : 10 -> 4 : 20 -> 5 : 30 -> 6 : 100 -> 7 : 50 -> 8 : dog
+}
+
+The construction is very simple.
+
+We set the index variable to 0 and increase it by 1 in each iteration until the index is equal to the length of the array.
+
+In each iteration, we display the index and the corresponding array element.
+
+Is there an even easier way to do this? It turns out that yes, there is.
+
+However, we’re going to simplify it gradually, initially complicating the code even more.
+
+We’ll create the toConsole function, which will take three parameters: item, index, and array. This is the format imposed by the forEach method.
+
+The name of the function is given to the forEach method to be called. What happens then?
+
+
+function toConsole(item, index, array) {
+    console.log(`${index} : ${item}`);
+}
+array1.forEach(toConsole); // -> 0 : cat -> 1 : 90 -> 2 : 80 -> 3 : 10 -> 4 : 20 -> 5 : 30 -> 6 : 100 -> 7 : 50 -> 8 : dog
+
+The forEach method goes through all elements of the array stored in our object (in this example, array1).
+
+For each element, it calls a function that has been passed to it as an argument (toConsole).
+
+Each call to this function will receive different item and index arguments.
+
+The array argument will be the same every time – it is just our whole array (in practice it is rarely used).
+
+Let's try to simplify our example:
+
+
+array1.forEach(function (item, index) {
+    console.log(`${index} : ${item}`);
+});
+
+What has changed?
+
+We have abandoned the explicit declaration of our toConsole function and used an anonymous function instead (the differences between anonymous and named functions were discussed in the first part of the course).
+
+This function does not have a name, so we cannot refer to it from another place in the code.
+
+We don't mind, however, because the function will only be used by the forEach method.
+
+So we have given not the name of the function to the method, but the whole anonymous function.
+
+By the way, we removed the array from our function's parameter list, which we weren’t using anyway.
+
+Let's go a step further by changing our ordinary function into an array function:
+
+
+array1.forEach( (item, index) => {
+    console.log(`${index} : ${item}`);
+});
+
+As you can see, the function body (that is, what is inside the function) has not changed.
+
+The arrow functions allow us to simplify the notation even further by removing the parentheses around the function body (in the function body only one command is executed and the block is not needed).
+
+
+array1.forEach( (item, index) => console.log(`${index} : ${item}`));
+
+That is what we wanted.
+
+Compare this piece of code with the construction written with the for loop, and you’ll see that now it looks much simpler and more elegant.
+
+Get used to this type of construction.
+
+First of all, many array methods work on a similar principle, and secondly, in real applications, you will rarely see the for or while loops.
+
+3.2.9 The every and some methods
+A similar technique is used, among others, in two consecutive methods: every and some.
+
+The first one, every, checks whether all the elements of the array meet a certain condition we have given.
+
+The second method, some, is successful if at least one of the elements meets the condition. The methods return true in the case of success, or false in the case of failure.
+
+Both take as an argument a function that will allow the testing of a single element.
+
+Both some and every pass through the array, calling the given function for individual elements (every for all, some until an element satisfies our condition).
+
+
+let array1 = ["cat", 90, 80, 10, 20, 30, 100, 50, "dog"];
+let anyNumberPresent = array1.some( (item) => {
+    if(typeof item === "number") {
+        return true;
+    } else {
+        return false;
+    }
+}); // -> true
+
+This time we use the anonymous arrow function, passing it as an argument to the some method. The function in the example only takes the parameter item, although, like in forEach, we can use the parameters index and array if necessary. Our function checks if the item is a number primitive.
+
+If so, it returns true, and if not, it returns false. Here, of course, we can use any logic, and we decide how our testing function works, what is true and what is false. In the case of the some method, it is sufficient that the function for one element returns true. Then the some method also returns true.
+
+In the case of the every method, the function must return true for all tested array elements. Only then does every return true.
+
+In our example, the result of the array1.some call is returned to the anyNumberPresent variable.
+
+Our function code is a bit redundant, so let's simplify it.
+
+The operator typeof returns true or false, so the whole conditional if instruction is actually unnecessary.
+
+
+anyNumberPresent = array1.some( (item) => {
+    return (typeof item === "number");
+}); // -> true
+
+There is only one instruction in the function block, so we can remove the brackets that enclose it.
+
+Note that in arrow functions, where we do not use curly brackets to mark the function block, the return keyword also disappears.
+
+The arrow function automatically returns the result of such a single instruction.
+
+As there is only one parameter item passed to the function, we can also omit the parentheses surrounding the parameter.
+
+
+anyNumberPresent = array1.some( item => typeof item === "number"); // -> true
+
+We have prepared a similar example for the every method.
+
+This time we want to check if all the elements in the array are numbers greater than zero.
+
+
+let array2 = [90, 80, 10, 20, 30, 100, 50];
+let allPositive = array2.every(item => item > 0); // -> true
+
+3.2.10 Filtering
+The use of another method, the filter, is very similar.
+
+Just like the every method, it calls a test function we have written for each element of the array.
+
+In this function, we decide whether a single element has passed the test (we return true) or not (we return false).
+
+The filter method copies all elements that have passed our test and returns them as a new array.
+
+That is, it actually filters the original array, using the single element test function.
+
+Let's stress that again – the filter method creates and returns a new array (it does not modify the original one).
+
+Look at the code below:
+
+
+let array1 = ["cat", 90, 80, 10, 20, 30, 100, 50, "dog"];
+console.log(array1.length); // -> 9
+let numbers = array1.filter(item => typeof item === "number"); // -> [90, 80, 10, 20, 30, 100, 50]
+console.log(numbers.length); // -> 7
+console.log(array1.length); // -> 9
+
+In the example, the numbers variable gets those elements from the array1 that are number primitives.
+
+In the testing function, we use only the item parameter, although just like in every, some, or forEach we can also use other ones: index and array.
+
+3.2.11 Mapping elements
+Another interesting method is map.
+
+Like filter, it returns a new array of the same size as the original one.
+
+The new array is created by performing the action we invented on each element of the original array.
+
+In the example, this action is trivial, and the new element is obtained by multiplying the original element by itself.
+
+However, the logic of such an action can be much more complex, and it depends only on us and our needs.
+
+Note that in the example, we first use the filter method to copy only the elements that are numbers from array1.
+
+It’s only in the next step that we call the map method, using method chaining.
+
+Look at the code below:
+
+
+let array1 = ["cat", 90, 80, 10, 20, 30, 100, 50, "dog"];
+let squarePower = array1.filter(item => typeof item === "number").map(item => item*item); // -> [8100, 6400, 100, 400, 900, 10000, 2500]
+
+New elements have been added to the squarePower array.
+
+The function passed to the map method takes the item, index, and array arguments, although in our example we have limited ourselves to using the item argument.
+
+3.2.12 Sorting
+A very useful method is sort, which, as you rightly think, sorts the array elements. This time, we’re operating on the original array, and we’re not making a copy of it.
+
+When we call the sort method, the order changes, and is visible in the array.
+
+In what order are the elements of the array sorted? It depends only on us.
+
+The sort method accepts, like the previously discussed methods, the function we have created.
+
+It will be a function that compares the two elements of the array and decides which element should be the preceding one, and which element should be the next in order.
+
+The function takes two parameters: first and second, which correspond to the two elements being compared.
+
+If we think that the first element should precede the second, we return a negative value (for example -1). If the first should be moved after the second, we return a positive value.
+
+Returning 0 means that we think the elements are equal (in terms of sort order). The sort method repeatedly (and implicitly) calls a comparison function for different elements until the array is sorted.
+
+Look at the code below:
+
+
+let array1 = ["cat", 90, 80, 10, 20, 30, 100, 50, "dog"];
+let numbers = array1.filter(item => typeof item === "number"); // -> [90, 80, 10, 20, 30, 100, 50]
+console.log(numbers[0]);
+numbers.sort((first, second) => {
+    if( first < second) {
+        return -1
+    } else if(first == second) {
+        return 0;
+    } else {
+        return 1;
+    }
+}); // -> [10, 20, 30, 50, 80, 90, 100]
+console.log(numbers[0]);
+
+In the example, we filter the elements of the array1 array, placing only those which are numbers in the numbers array.
+
+In the next step, we sort the elements using the sort method. The sorting function we’re using contains extremely simple logic.
+
+It compares adjacent numbers and sets the ascending order (smaller elements will precede larger ones).
+
+Sorting is done directly on the elements of the numbers array. Of course, in this case too, we can simplify our code a bit.
+
+
+numbers.sort((first, second) =>  first - second); [10, 20, 30, 50, 80, 90, 100]
+
+Try to analyze this revised code yourself.
+
+The result will be the same as the previous, more elaborate example.
+
+Note that the comparison function does not have to return exactly the values -1 and 1.
+
+The sort method will treat any negative or positive number returned by this function in the same way.
+
+3.2.13 Reducing the array
+The reduce method, which we are now going to address, can cause some problems when trying to understand it.
+
+Its concept is very simple. The method goes through all the elements of the array starting from the left, and for each element it calls the function we have written.
+
+So how is it different from forEach?
+
+Well, it differs in which parameters it takes and what our function returns (called a reducing function).
+
+Let's look at an example below:
+
+
+let numbers = [10, 20, 30, 50, 80, 90, 100]; // -> [10, 20, 30, 50, 80, 90, 100]
+let sum = numbers.reduce((accumulator, item) => accumulator + item);
+console.log(sum); // -> 380
+
+The reduce method will be called for the numbers array, which contains seven different numbers.
+
+Pay attention to the reducing function and especially to its parameters: accumulator and item.
+
+While the item parameter is quite obvious (this is another element of the array visited by reduce), the accumulator parameter is something new.
+
+In this parameter the value returned by the previous call of the reducing function is passed.
+
+Let's try to follow, step by step, what happens after running our code.
+
+The reduce method starts going through the array from the left, skipping the first element, that is, 10 (more on why we skip it in a moment).
+
+The first call of the reduction function in our example therefore concerns element 20.
+
+The result of the previous reduction function call (the parameter accumulator) should also be passed.
+
+Since this is the first call and we do not have such a previous result, the first element of the array is passed, namely 10.
+
+The function also gets, as item, the element 20.
+
+Our function sums up these two values and returns them.
+
+Remember that in the arrow function, if we don’t use curly brackets enclosing the function block, the value of the executed operation is automatically returned (without the need to use the return keyword).
+
+Then reduce moves to element 30.
+
+A value of 30 (calculated on the previous call of the reduction function) is passed to the reduction function as accumulator, and as item our visited element 30 is passed.
+
+The summation result (60) is returned by the function. The next element visited is 50.
+
+The reduction function that is called for it receives the value 60 calculated in the previous step, and element 50, adds them up and returns them.
+
+Calls are repeated until the last element of the array, and the reduce method returns the value of the last reducing function call, in our case the last summation.
+
+The reducing function does not have to be limited to summing up or even to performing arithmetic operations.
+
+We can put almost any logic into it.
+
+However, summing up is so simple that it allows us to focus on understanding the operation of the reduce method itself and the chain of reduction function calls.
+
+The reduce method may, in addition to its reducing function, accept another argument.
+
+This is the initial value.
+
+If we pass it, reduce does not omit the first element when going through the array.
+
+The reduction function called for the first element will then receive an initial value as accumulator.
+
+Further reduce behavior will be the same as in the example discussed above.
+
+Note: The initial value (the number 1000 in the example below) is a parameter of the reduce method, not the reduction function.
+
+
+let anotherSum = numbers.reduce((accumulator, item) => accumulator + item, 1000);
+console.log(anotherSum); // -> 1380
+
+Let’s look at another example of using reduce, this time demonstrating a slightly different logic of the reduction function.
+
+We’ll use it to convert the array into an object with the keys that are elements of the array and the values that are indexes of those elements.
+
+
+let strangeObj = numbers.reduce((accumulator, item, index) => {
+    accumulator[item] = index;
+    return accumulator;
+} , {});
+console.log(strangeObj); // -> {10: 0, 20: 1, 30: 2, 50: 3, 80: 4, 90: 5, 100: 6}
+An empty object (literal notation – empty curly brackets) is given as an initial value to reduce.
+
+Each time the reduce function is called, starting from the first element of the array, a new field is added to the object received from the previous call, and the modified object is returned.
+
+Try to analyze this code a little more carefully and don’t worry if it seems a little confusing at first: the reduce method (and similar methods) have created problems for all programming learners.
+
+This may be a bit archaic, but it would be good if you could trace all three examples of reduction shown on a sheet of paper with a pencil in your hand.
+
+Write down each step, check what each reduction call gets, and what is returned in each step.
+
+3.2.14 Reversing the order of the elements
+Another Array method, reverse, is fortunately much easier to use.
+
+This method allows you to reverse the order of the array elements, while it works in place (we modify the original array).
+
+And that is all you need to know about it, because it doesn't even require any arguments.
+
+Let's look at an example below:
+
+
+let numbers = [10, 20, 30, 50, 80, 90, 100]; // -> [10, 20, 30, 50, 80, 90, 100]
+console.log(numbers[0]); // -> 10
+numbers.reverse(); // -> [100, 90, 80, 50, 30, 20, 10]
+console.log(numbers[0]); // -> 100
+numbers.reverse(); // -> [10, 20, 30, 50, 80, 90, 100]
+console.log(numbers[0]); // -> 10
+
+3.2.15 Looking for an element
+The Array constructor also offers several methods to search for specific items in the array.
+
+The methods includes, indexOf, and lastIndexOf take as their argument the value we are looking for in the array.
+
+The include method returns true if the item is located (otherwise it returns false).
+
+The indexOf method returns the index (that is, the position) of the first element found in the array with the value we are looking for, or -1 if we fail.
+
+In case of this method, we start the search from the left side of the array (i.e. from the beginning).
+
+The lastIndexOf method works similarly, the only difference being that the search starts from the right side (from the end of the array).
+
+Let's look at an example below:
+
+
+let myPets = ["cat", "dog", "hamster", "canary", "shark", "cat", "dog"];
+console.log(myPets.includes("shark")); // -> true 
+console.log(myPets.includes("unicorn")); // -> false
+console.log(myPets.indexOf("dog")); // -> 1
+console.log(myPets.lastIndexOf("dog")); // -> 6
+console.log(myPets.indexOf("unicorn")); // -> -1
+
+We also have slightly more advanced search methods at our disposal, i.e. find and findIndex.
+
+Both methods take a testing function as a parameter (similarly to the some or every methods).
+
+The find and findIndex methods go through successive array elements calling the test function.
+
+Inside the function, we decide whether a visited element is the one we are looking for, returning true or false respectively.
+
+The search ends after finding the first item for which a test function call is successful, or after reaching the last item.
+
+The find method returns true if we find an item that meets our condition, and false if it does not.
+
+The findIndex method will return the index of the found element if successful, or -1 if unsuccessful.
+
+Let's look at an example below:
+
+
+let myPets = ["cat", "dog", "hamster", "canary", "shark", "cat", "dog"];
+console.log(myPets.find(item => item.length > 3)); // -> hamster
+console.log(myPets.find(item => item.includes("og"))); // -> dog
+console.log(myPets.find(item => item.includes("fish"))); // -> undefined
+console.log(myPets.findIndex(item => item.length > 3)); // -> 2
+console.log(myPets.findIndex(item => item.includes("og"))); // -> 1
+console.log(myPets.findIndex(item => item.includes("fish"))); // -> -1
+
+3.2.16 Copying a selected part of the array
+We can also use the slice method, which we learned about when discussing the String constructor.
+
+The method allows you to copy a selected part of the array.
+
+It accepts one or two arguments.
+
+The first argument determines the index from which we start copying.
+
+If it is a negative value, the index is counted backwards from the end of the array.
+
+The second argument is the index of the end of the copied fragment of the array (the element at this index will not be copied).
+
+If the second argument is omitted, the slice method copies all elements from the starting index to the end of the array.
+
+The method does not affect the original array, and it returns a copy of the selected part of the array.
+
+Let's look at an example below:
+
+
+let myPets = ["cat", "dog", "hamster", "canary", "shark", "cat", "dog"];
+let p1 = myPets.slice(3); // ->  ["canary", "shark", "cat", "dog"]
+let p2 = myPets.slice(3, 5); // -> ["canary", "shark"]
+let p3 = myPets.slice(-3); // -> ["shark", "cat", "dog"]
+let p4 = myPets.slice(-3, -1); // -> ["shark", "cat"]
+
+3.2.17 Deleting and replacing a selected part of the array
+A method with a similar name, splice, works for a change in place, and modifies the original array.
+
+We can use it in two ways.
+
+The first way allows us to remove selected elements from the array.
+
+The elements to be removed are indicated either using one or two arguments.
+
+The first argument is the index of the first element to be removed and the second argument is the number of elements to be removed.
+
+The index can be a negative value (we then count it from the end of the array).
+
+Skipping the second argument means that we want to delete all elements from the indicated starting index to the end of the array.
+
+What is important is that the method returns the deleted elements (e.g. we can store them in a variable or, as in the example, display them).
+
+Look at an example below:
+
+
+let myPets = ["cat", "dog", "hamster", "canary", "shark", "cat", "dog"];
+let removedPets = myPets.splice(2, 3); 
+console.log(myPets); // -> ["cat", "dog", "cat", "dog"]
+console.log(removedPets); // -> ["hamster", "canary", "shark"]
+
+The splice method can also be used to insert new elements into the array.
+
+It is for this purpose, we gave you the previous two arguments.
+
+The first argument is the initial index, while the second is the number of elements to be deleted from the index.
+
+This time both arguments must be provided.
+
+If we don’t want to delete anything, then we give 0 as the second argument.
+
+For any subsequent arguments, we give the values to be located in a specified place of the array.
+
+Therefore, we can call splice to simultaneously remove several selected elements and insert new ones in their place, or we can add new ones from the indicated index without removing the existing ones.
+
+Look at an example below:
+
+
+let myPets = ["cat", "dog", "hamster", "canary", "shark", "cat", "dog"];
+myPets.splice(2, 0, "rabbit", "guinea pig");
+console.log(myPets); // -> ["cat", "dog", "rabbit", "guinea pig", "hamster", "canary", "shark", "cat", "dog"]
+
+In the example, we limit ourselves to inserting two new elements without removing any of the existing ones.
+
+3.2.18 The destructuring assignment
+We learned about the destructuring assignment when looking at objects.
+
+In JavaScript, there is a version of this technique for arrays.
+
+Let us look at the following piece of code:
+
+
+let myPets = ["cat", "dog", "hamster", "canary"];
+let pet1 = myPets[0];
+let pet3 = myPets[2];
+let pet4 = myPets[3];
+console.log(pet1); // -> cat
+console.log(pet3); // -> hamster
+
+We have assigned selected elements from the myPets array to the variables pet1, pet2, and pet3. The same effect can be achieved by using a destructive assignment.
+
+
+let [pet1, , pet3, pet4] = myPets;
+console.log(pet1); // -> cat
+console.log(pet3); // -> hamster
+
+As you can see, this form of notation is a bit simpler, and it will be especially noticeable with a large number of substitutes. Newly declared variables are placed after the let keyword in square brackets and separated by commas.
+
+They are assigned values from the next positions of the myPets array.
+
+If we don't want to copy any of the array items, we can mark it by leaving a blank field separated by commas.
+
+But what happens if an element in the array is not found in the given position?
+
+
+let myPets = ["cat", "dog"];
+let [pet1, , pet3] = myPets;
+console.log(pet1); // -> cat
+console.log(pet3); // -> undefined
+
+As you can see, an undefined value will be substituted for such a variable (in our case pet3).
+
+The destructuring assignment allows us to prepare default values, which will be used if there is no element in the array (otherwise the default value is ignored).
+
+
+let myPets = ["cat", "dog"];
+let [pet1 = "fish", , pet3 = "fish"] = myPets;
+console.log(pet1); // -> cat
+console.log(pet3); // -> fish
+
+3.2.19 The spread operator in arrays
+An equally useful technique is the use of the spread operator (i.e. three dots).
+
+It allows the spread of the array into individual elements where a list of elements or arguments is expected.
+
+The simplest example is to use elements of an existing array to create a new one.
+
+
+let array1 = [100, 200, 300];
+let array2 = [1000, 2000];
+let array3 = [10, 20, ...array1, 500, ...array2]; //-> [10, 20, 100, 200, 300, 500, 1000, 2000]
+
+The operator can also be used to spread the array over the elements while passing them on as arguments of the function.
+
+
+let testFn = (a, b, c, d) => a + b + c + d;
+let array = [10, 20, 30, 40];
+console.lof(testFn(...array)); // -> 100
+
+3.2.20 Set
+The Set constructor is used to create a collection of unique elements.
+
+Elements of the same value cannot appear in a collection of this type.
+
+Any attempt to add an element that is already in the collection will be ignored.
+
+We can treat the set collection as a bag, into which we put different, unique elements.
+
+It is difficult to arrange anything in the bag, so therefore we are not interested in the order of these elements.
+
+The Set constructor provides methods to check if there is a particular element in our bag and reviews all the elements one by one (i.e. taking them out of the bag).
+
+Set differs from the array because the elements are not ordered, and they do not have an unambiguously defined position (this is a simplification, but it is completely acceptable from the point of view of using Set).
+
+Additionally, the same elements could appear in the array in different positions.
+
+Formally, each element of the set collection consists of a key and a value.
+
+In practice, however, both of these attributes are exactly the same.
+
+Therefore, it is easier to think of a set item as having only the value, without a key.
+
+The stored values can be of any type, both simple and composite.
+
+
+3.2.21 The Set constructor
+The Set constructor can be called up without any arguments.
+
+Then we can create an empty collection.
+
+Over time, it will be possible to modify it by adding and removing elements from it.
+
+The constructor can accept the array as an argument.
+
+Its elements will be automatically added to the collection.
+
+Look at an example below:
+
+
+let emptySet = new Set(); // -> {}
+console.log(emptySet.size); // -> 0
+let petsSet = new Set(["cat", "dog", "cat"]); // -> {"cat", "dog"}
+console.log(petsSet.size); // -> 2
+
+3.2.22 Checking the presence of the element
+To check the number of elements in the collection, we use the size property (its equivalent in the array is the length property).
+
+The simplest method of Set constructor is has.
+
+It allows you to check if an element with the value given as an argument is in the collection.
+
+
+Look at the code below:
+
+
+let petsSet = new Set(["cat", "dog"]); // -> {"cat", "dog"}
+console.log(petsSet.has("cat")); // -> true
+console.log(petsSet.has("shark")); // -> false
+
+3.2.23 Handling elements
+We will use:
+
+the add,
+the delete,
+and clear
+methods to operate on individual elements of the collection.
+
+The purpose of these methods is easy to guess from their names.
+
+
+Look at the code below:
+
+
+console.log(petsSet.size); // -> 2
+petsSet.add("shark");
+petsSet.add("hamster");
+console.log(petsSet.size); // -> 4
+console.log(petsSet.has("shark")); // -> true
+petsSet.delete("dog"); // -> true
+petsSet.delete("dog"); // -> false
+console.log(petsSet.size); // -> 3
+petsSet.clear();
+console.log(petsSet.size); // -> 0
+
+3.2.24 Walking through the set elements
+Aside from access to selected elements, it is possible to go through the whole collection element by element.
+
+The Set constructor provides several methods for this purpose.
+
+Let's start with forEach, which works almost identically to the corresponding Array constructor method of the same name.
+
+We pass the function to be called for each element in the collection to the method.
+
+Look at the code below:
+
+
+let petsSet = new Set(["cat", "dog", "hamster"]); // -> {"cat", "dog", "hamster"}
+petsSet.forEach(value => console.log(value)); // -> cat -> dog -> hamster
+
+In our example, the function takes one parameter: value.
+
+This is the value of the visited element.
+
+In this example, we are only limited to displaying it, although you can put any logic in this place, according to what you need.
+
+We said earlier that in a set collection, the keys and values of the item are the same.
+
+This is perfectly visible in the forEach method.
+
+Its proper syntax assumes that the function takes the value and key parameters and not, as in our example, only value.
+
+According to the documentation, we could therefore write our example in the following form:
+
+
+petsSet.forEach((value, key) => console.log(`(${value}:${key})`)); // -> (cat:cat) -> (dog:dog) -> (hamster:hamster)
+
+It is clear that this is not the case, since both arguments are exactly the same.
+
+Another way to go through the collection elements is to use the values method.
+
+It is used more often than the forEach method, but it requires a new concept, the iterators.
+
+An iterator is an object that stores information about visited collection elements.
+
+It provides the next method, which allows us to move to the next collection element (we change the state of the iterator).
+
+Calling next returns an object containing the value field, in which the visited item is located.
+
+Apart from value there is another field, done, which will inform us if the current visited item is the last one in the collection.
+
+Look at the code below:
+
+
+let petsSet = new Set(["cat", "dog", "hamster"]); // -> {"cat", "dog", "hamster"}
+let petsIterator = petsSet.values();
+console.log(petsIterator.next().value); // -> cat
+console.log(petsIterator.next().value); // -> dog
+console.log(petsIterator.next().value); // -> hamster
+
+In this example, we use the fact that we know the number of items in the collection and how many times we call the next method of our petsIterator iterator.
+
+The same can also be done in a loop that makes its ending dependent on the value done of the returned object.
+
+Look at the code below:
+
+
+let petsIterator = petsSet.values();
+let result = petsIterator.next();
+while (!result.done) {
+    console.log(result.value); // -> cat -> dog -> hamster
+ result = petsIterator.next();
+}
+
+The Set constructor also provides the keys method, but its operation is identical to values (the keys and values in Set are the same).
+
+3.2.25 The spread operator in sets
+In sets, as in arrays, you can use a spread operator. Like arrays, it is used to split the collection into a single element, which will be used, for example, to create an array or pass it as function argument. In the following example, we will use the operator when converting a set collection to an array.
+
+Look at the code below:
+
+
+let petsSet = new Set(["cat", "dog", "hamster"]); // -> {"cat", "dog", "hamster"}
+console.log(petsSet instanceof Set); // -> true
+let petsArray = [...petsSet]; // -> ["cat", "dog", "hamster"]
+console.log(petsArray instanceof Array); // -> true
+
+More information about the Set constructor, its methods and how to use this type of collection can be found on the MDN website6.
+
+6The Set object
+
+3.2.26 Map
+The next constructor we will discuss, Map, is also used to create a collection of elements.
+
+In this case, each element of this collection consists of a different key:value pair.
+
+This construction is similar to an ordinary object, where property names are keys, to which we assign values.
+
+However, when it comes to data storage, the map is much more universal than the object, because it allows us to use any types as keys.
+
+Values that are paired with keys can also be of any type.
+
+The keys in the map are unique, trying to add a new element with the same key as the existing one will overwrite it.
+
+
+As in Set, the order of the elements does not matter.
+
+The difference is that we store key:value pairs in the map, while in the set we store values only.
+
+3.2.27 The Map constructor
+Let's start by creating maps.
+
+We can provide the constructor with an array containing any number of elements.
+
+The important thing is that each element of this array is also an array, a two-element array.
+
+The key will be stored in the zero position of the first value.
+
+If we do not provide any argument to the constructor, an empty map will be created.
+
+Look at the code below:
+
+
+let emptyMap = new Map();
+let petsMap = new Map([["cats", 1],[ "dogs", 2],[ "hamsters", 5]]);
+console.log(emptyMap.size); // -> 0
+console.log(petsMap.size); // -> 3
+
+In this example, we have created two maps, an empty emptyMap and a petsMap with three pairs: cats:1, dogs:2, and hamsters:5.
+
+Let's say this is a list of our pets.
+
+The keys here are the strings: "cats", "dogs", and "hamsters".
+
+The associated values are 1, 2, and 5 respectively.
+
+In the example, we also use the size property, which has the same purpose as the Set constructor.
+
+3.2.28 Checking the presence of the element
+Like the Set constructor, here we have the has method which allows us to check if there is an item with the given key in the collection (we look only at the key, and not at the value).
+
+Look at the code below:
+
+
+let petsMap = new Map([["cats", 1],[ "dogs", 2],[ "hamsters", 5]]);
+console.log(petsMap.has("dogs")); // -> true
+console.log(petsMap.has("sharks")); // -> false
+console.log(petsMap.has(1)); // -> false
+
+Thanks to the has method, we discover that in our collection we do have dogs, but we are missing sharks.
+
+3.2.29 Handling elements
+We manage our collection using the set, get, delete and, clear methods.
+
+Their use is intuitive, so only a simple example is needed to understand them.
+
+Look at the code below:
+
+
+let petsMap = new Map([["cats", 1],[ "dogs", 2],[ "hamsters", 5]]);
+console.log(petsMap.get("hamsters")); // -> 5
+petsMap.set("hamsters", 6);
+console.log(petsMap.get("hamsters")); // -> 6
+petsMap.delete("hamsters");
+console.log(petsMap.get("hamsters")); // -> undefined
+petsMap.clear();
+console.log(petsMap.size); // -> 0
+
+3.2.30 Walking through the map elements
+To go through the elements of the map, we will use the same methods we learned with the sets.
+
+forEach
+
+Let's start with the forEach method:
+
+
+let anotherPetsMap = new Map([["snakes", 1],["cats", 3],["dogs", 2]]);
+anotherPetsMap.forEach((value, key) => console.log(`${key} : ${value}`)); // -> snakes : 1 -> cats : 3 -> dogs : 2
+
+values
+
+The values method, which you already know from the Set constructor, is also available in maps, and requires the use of iterators here, too. From each element you visit, its value is taken (the key is ignored).
+
+
+let anotherPetsMap = new Map([["snakes", 1],["cats", 3],["dogs", 2]]);
+let petValuesIterator = anotherPetsMap.values();
+console.log(petValuesIterator.next().value); // -> 1
+console.log(petValuesIterator.next().value); // -> 3
+console.log(petValuesIterator.next().value); // -> 2
+
+keys
+
+The keys method, which we mentioned when discussing the Set constructor, also returns an iterator.
+
+We use it in the same way as the iterator returned by the values method, only this time its key is taken from each element, not its value.
+
+Note that the key returned by calling the next iterator method is placed in a property called value.
+
+This is because iterators are general purpose objects – value simply means something that has been returned to it from a certain collection.
+
+
+let anotherPetsMap = new Map([["snakes", 1],["cats", 3],["dogs", 2]]);
+let petKeysIterator = anotherPetsMap.keys();
+console.log(petKeysIterator.next().value); // -> snakes
+console.log(petKeysIterator.next().value); // -> cats
+console.log(petKeysIterator.next().value); // -> dogs
+
+entries
+
+In addition to the values and keys methods, we have one more method: entries.
+
+It works in the same way as the previous two, only this time the iterator returns the entire element, that is the key:value pair saved as a two-element array.
+
+
+let anotherPetsMap = new Map([["snakes", 1],["cats", 3],["dogs", 2]]);
+let petValuesIterator = anotherPetsMap.values();
+console.log(petValuesIterator.next().value); // -> 1
+console.log(petValuesIterator.next().value); // -> 3
+console.log(petValuesIterator.next().value); // -> 2
+
+
+As a reminder, we can use the iterator in the loop, checking if we still have any elements to go through.
+
+Look at the code below:
+
+
+let petsIterator = anotherPetsMap.entries();
+let result = petsIterator.next();
+while (!result.done) {
+    console.log(result.value); // -> ["snakes", 1] -> "cats", 3] -> ["dogs", 2]
+ result = petsIterator.next();
+}
+
+3.2.31 The for ... of loop
+For the purpose of going through the collections (i.e. arrays, sets, and maps) another simple mechanism was created in JavaScript – the for ... of loop.
+
+It is universal for all collections and its use is so intuitive it does not require any explanation.
+
+We analyze its functioning on the basis of the code presented here and compare the results for the array, then for set and map.
+
+Look at the code below:
+
+
+let petsArray = ["cat", "dog", "hamster"];
+for( let pet of petsArray) {
+    console.log(pet); // -> cat -> dog -> hamster
+};
+let petsSet = new Set(["cat", "dog", "hamster"]);
+for( let pet of petsSet) {
+    console.log(pet); // -> cat -> dog -> hamster
+};
+let petsMap = new Map([["cats", 1], ["dogs", 3], ["hamsters", 2]]);
+for( let pet of petsMap) {
+    console.log(pet); // -> ["cats", 1] -> ["dogs", 3] -> ["hamsters", 2]
+    console.log(pet[0]); // -> ctas -> dogs -> hamsters
+}
+
+3.2.32 The spread operator in maps
+The spread operator, as with sets and arrays, allows the map to be split into single elements.
+
+In this example, we use it to convert the map into an array.
+
+Look at the code below:
+
+
+let petsMap = new Map([["cats", 1], ["dogs", 3], ["hamsters", 2]]);
+console.log(petsMap instanceof Map); // -> true
+let petsArray = [...petsMap]; // -> [["cats", 1], ["dogs", 3], ["hamsters", 2]]
+console.log(petsArray instanceof Array); // -> true
+
+For more information about the Map constructor, please visit the MDN website7.
+
+
+7The Map object
+
+3.2.33 Object
+The Object constructor, as well as the objects themselves, has already appeared several times in the course, and in fact we devoted the entire first chapter to them.
+
+However, let’s look at them again, from a slightly different perspective, treating them as a composite data structure.
+
+Arrays, maps, or sets are composite structures whose main task is to allow you to store your data collection.
+
+Each of these structures has different features and is suitable for different tasks. The elements of an array can be repeated.
+
+As they only have values, we identify them by their position (index) and therefore their order is important.
+
+A set is a data collection without indexes, in which a certain order is maintained, but it does not affect the operation of the set.
+
+Elements in a set have only a value (although formally in JavaScript they also have keys identical to values).
+
+The last of these structures (i.e. the map) similar to the set has elements whose order is not important.
+
+Map elements always consist of a key:value pair, both attributes of which can be of any type.
+
+The keys in the map must be unique, and they cannot be repeated.
+
+3.2.34 Creating an object
+You may have noticed a similarity between the map and the object.
+
+In fact, very often objects are used in JavaScript to store data instead of maps (both are also collections of key:value pairs).
+
+Values can be of any type here although some restrictions are imposed on keys (we talked about this in the first chapter of the course).
+
+Let's remind ourselves of some facts about objects, looking at them only as structures designed to store data, just like maps.
+
+We must therefore be able to create such a structure, dynamically modify its content, that is adding, removing, and modifying elements according to the nomenclature used in objects – properties – and go through them.
+
+First, let's create an object using literals (we're implicitly referencing the Object constructor at this point).
+
+Let's treat an object as a collection of elements with certain keys and values.
+
+
+let anotherPetsObj = {"snakes": 1,"cats": 3,"dogs": 2};
+
+3.2.35 Handling elements
+Adding and modifying elements is done with the use of dot notation or bracket notation and a key (i.e. property name).
+
+We use the delete command to delete an element.
+
+Look at the code below:
+
+
+console.log(anotherPetsObj.snakes); // -> 1
+anotherPetsObj.snakes = 2;
+console.log(anotherPetsObj.snakes); // -> 2
+delete anotherPetsObj.snakes;
+console.log(anotherPetsObj.snakes); // -> undefined
+anotherPetsObj.snakes = 0;
+console.log(anotherPetsObj.snakes); // 0
+
+3.2.36 Walking through elements
+To move through the elements stored in the object, we can use, among others, static method keys, values, and entries of the constructor Object.
+
+This time we do not use iterators. All these methods return arrays containing keys, values, and key-value pairs respectively.
+
+We can go through each of the arrays using the forEach method, for example:
+
+
+let anotherPetsObj = {"snakes": 1,"cats": 3,"dogs": 2};
+Object.keys(anotherPetsObj).forEach(key=>console.log(key)); // -> snakes -> cats -> dogs
+Object.values(anotherPetsObj).forEach(key=>console.log(key)); // -> 1 -> 3 -> 2
+Object.entries(anotherPetsObj).forEach(key=>console.log(key)); // -> ["snakes", 1] -> ["cats", 3] -> ["dogs", 2]
+
+The for ... of loop, which works for arrays, maps, and sets doesn't work for objects, but we have a for ... in construct instead.
+
+
+let anotherPetsObj = {"snakes": 1,"cats": 3,"dogs": 2};
+for (let key in anotherPetsObj) {
+    console.log(key); // -> snakes -> cats -> dogs
+    console.log(anotherPetsObj[key]); // -> 1 -> 3 -> 2
+}
+
+3.2.37 The spread operator for objects
+We can also use spread operator for objects, but it works a bit differently than for arrays or maps.
+
+You can use it only for passing the properties of one object to another object (we looked at this in the objects section).
+
+Look at the code below:
+
+
+let petsObj = {"cats": 1, "dogs": 3, "hamsters": 2};
+let newPetsObj = {...petsObj, "sharks": 1}; // -> {cats: 1, dogs: 3, hamsters: 2, sharks: 1}
+
+The storage of data in objects is so practical that there is a special technique for processing them into text form, allowing for their transport in the network.
+
+This format is known as JSON, and we will go through this in more detail in the next section.
+
+---
+
+3.3 Section 3 – JSON, Math and RegExp
+Scroll to begin 
+
+3.3.1 JSON, Math, and RegExp
+Built-in objects are not only constructors of simple and composite data types.
+
+In the form of these objects, some additional functionalities are available in JavaScript.
+
+Let's take a closer look at three such objects:
+
+JSON;
+Math;
+and RegExp.
+
+
+
+3.3.2 JSON
+JSON is an abbreviation of JavaScript Object Notation, meaning a text-based data format.
+
+It is mainly used to send data over the network.
+
+However, it turned out to be so practical that it has long since ceased to be used only in JavaScript, becoming one of the most popular, if not the most popular, data exchange formats.
+
+Its main competitor is still the XML format, but in the case of JavaScript, the choice of JSON is a no-brainer.
+
+It was invented specifically for this particular language. JSON is a text format that allows objects and arrays to be stored.
+
+To convert data (objects and arrays) into the JSON format and vice versa, from text to objects and arrays, a built-in JSON object is used in JavaScript.
+
+In this case, it is really an object, not a constructor.
+
+We do not create it, we do not delete it, and we do not modify it.
+
+This ready-to-use object exists and is waiting to be used, providing us with two methods: stringify and parse.
+
+Let’s try converting the browser's main object, the window, into JSON format.
+
+Look at the code below:
+
+
+let vehicle2 = {
+    id: "AK12113",
+    longitude: 59.358615, 
+    latitude: 17.947589,
+    getId: function() {
+        return this.id;
+    }
+};
+let vehicle2JSON = JSON.stringify(vehicle2);
+console.log(typeof vehicle2JSON); // -> string
+console.log(vehicle2JSON); // -> {"id":"AK12113","longitude":59.358615,"latitude":17.947589}
+
+The stringify method has not encountered any problems, either.
+
+The only thing to watch out for in this case is to avoid cycles.
+
+In variables or properties, we do not store whole objects, only references to them.
+
+It may happen that the same reference is written in two places in the object, at different levels of nesting, and one of its fields may refer to an object located higher in the nesting.
+
+This can lead to a cycle.
+
+Let's repeat the experiment, this time adding the getId method to the object.
+
+Look at the code below:
+
+
+let vehicle2 = {
+    id: "AK12113",
+    longitude: 59.358615, 
+    latitude: 17.947589,
+    getId: function() {
+        return this.id;
+    }
+};
+let vehicle2JSON = JSON.stringify(vehicle2);
+console.log(typeof vehicle2JSON); // -> string
+console.log(vehicle2JSON); // -> {"id":"AK12113","longitude":59.358615,"latitude":17.947589}
+
+Everything works without errors and the result of the conversion is saved in the vehicle2JSON variable.
+
+It turns out, however, that there is no trace of the getId method in the target string.
+
+If we think about it carefully, this is perfectly reasonable.
+
+What would actually be there? Perhaps our method code?
+
+JSON is a format for exchanging data, not information about the program.
+
+You can see at this point that during conversion, JSON treats an object as a collection of elements, key:value pairs.
+
+So, it acts as a regular data structure for it.
+
+Let’s try converting the browser's main object, the window, into JSON format:
+
+JSON.stringify(window); // -> Uncaught TypeError: Converting circular structure to JSON
+
+The conversion will not succeed because of the existence of cycles in this object.
+
+
+The JSON format allows for writing not only objects, but also arrays.
+
+This is necessary because the field of an object may be an array.
+
+Let's test another case, creating and converting an array of objects to JSON.
+
+This time we will create several objects, using our Vehicle constructor. Each vehicle will have a different identifier, but the same location.
+
+Let's say they are all in the same car park:
+
+
+let Vehicle = function(id, latitude, longitude){ 
+    this.id = id;
+    this.latitude = latitude;     
+    this.longitude = longitude;
+}; 
+let ids = ["AK12113", "AL1024", "BA1001"];
+let vehicles = [];
+ids.forEach(id => vehicles.push(new Vehicle(id, 59.358615, 17.947589)));
+let vehcilesJSON = JSON.stringify(vehicles); // -> [{"id":"AK12113","latitude":59.358615,"longitude":17.947589},{"id":"AL1024","latitude":59.358615,"longitude":17.947589},{"id":"BA1001","latitude":59.358615,"longitude":17.947589}]
+
+Going through the ids array (the forEach method) we create a new Vehicle object for each identifier.
+
+Each object is inserted using the push method into the vehicles array. We then successfully pass this array to the JSON.strings method.
+
+3.3.3 Converting from JSON format
+We will use the JSON.parse method to recreate the object or array from the JSON text format.
+
+Let's try to test it on one of the simple strings generated in the previous examples.
+
+One of the basic rules of the JSON format is that the object keys are strings in double quotes.
+
+The second important limitation is the fact that in JSON format we can save one object or one array at a time (but consisting of many objects).
+
+Look at the code below:
+
+
+let vehicleJSON = '{"id":"AK12113","position":{"longitude":59.358615,"latitude":17.947589}}';
+let vehicle = JSON.parse(vehicleJSON);
+console.log(typeof vehicle); // -> object
+console.log(vehicle.position.longitude); // -> 59.358615
+
+The reconstructed object is stored in the vehicle variable.
+
+As you can see, it contains an object to whose fields we can easily refer.
+
+A slightly more complex JSON string, containing an array of objects, should be just as easy to convert.
+
+Look at the code below:
+
+
+let vehcilesJSON = '[{"id":"AK12113","latitude":59.358615,"longitude":17.947589},{"id":"AL1024","latitude":59.358615,"longitude":17.947589},{"id":"BA1001","latitude":59.358615,"longitude":17.947589}]';
+vehcilesJSON = vehcilesJSON.replaceAll("id", "plate");
+let vehicles = JSON.parse(vehcilesJSON);
+console.log(vehicles instanceof Array); // -> true
+console.log(vehicles.length); // -> 3
+console.log(vehicles[0].plate); // -> AK12113
+
+Before reconstructing the arrays and objects stored in the form of a JSON string, we modify it slightly (just for fun).
+
+Knowing that it is a string, we use the replaceAll method to replace all occurrences of 'id' with 'plate'.
+
+The result of the JSON.parse method call is saved in the vehicles variable.
+
+We then check that it is an array with three elements.
+
+The zero element is the object in which we find the plate field (originally id).
+
+
+As you can see, conversion to and from JSON is a very simple task.
+
+When converting objects, you only have to be careful of cycles.
+
+However, in everyday practice it is not realistic that you will create such an incorrect object from the JSON point of view.
+
+When converting from objects and arrays to text, make sure that the text is compatible with the JSON format.
+
+First and foremost, it must describe either a single object or a single array at the highest level.
+
+Secondly, each property name in an object (each key) must be enclosed in double quotes.
+
+3.3.4 Math
+The Math object, like JSON, is not a constructor, but an ordinary object.
+
+We don't create it, we just refer to it by name and choose a specific method or property to use it.
+
+It contains mathematical methods and constants.
+
+We recommend that you take a look at the MDN page8 to see what mathematical functions it offers.
+
+8Math - Javascript built-in object
+
+
+Math allows the use of several mathematical constants, the most important of which are the numbers π (pi) and e (the base of the natural logarithm).
+
+
+console.log(Math.PI); // -> 3.141592653589793
+console.log(Math.E); // -> 2.718281828459045
+
+The vast majority of the methods provided by Math are very simple to use and should be familiar to you from mathematics lessons.
+
+We will list them here, with short descriptions and examples of use.
+
+3.3.5 Rounding
+Some of the most commonly used methods are ceil, floor, and round.
+
+The ceil method rounds the given number up to the first integer greater than the one given in the argument.
+
+The floor method rounds down to the first integer less than the one given.
+
+The round method rounds the figure according to the rules of arithmetic (up if the decimal fraction is equal to or greater than 0.5, down if not).
+
+Look at the code below:
+
+
+console.log(Math.ceil(10.2)); // -> 11
+console.log(Math.floor(10.2)); // -> 10
+console.log(Math.round(10.2)); // -> 10
+console.log(Math.ceil(10.499999)); // -> 11 
+console.log(Math.floor(10.499999)); // -> 10
+console.log(Math.round(10.499999)); // -> 10
+console.log(Math.ceil(10.5)); // -> 11
+console.log(Math.floor(10.5)); // -> 10
+console.log(Math.round(10.5)); // -> 11
+console.log(Math.ceil(10.8)); // -> 11
+console.log(Math.floor(10.8)); // -> 10
+console.log(Math.round(10.8)); // -> 11
+
+3.3.6 Drawing numbers
+In practice, the method often used is random.
+
+It is used to generate pseudo-random numbers.
+
+After calling it, it generates a real value from 0 (inclusive) to maximum 1 (excluding 1).
+
+
+console.log(Math.random()); // -> ?
+
+We don’t often need a random value in the range from 0 to 1.
+
+Typically, we will need integers in a certain range.
+
+In order to get them, we have to write a piece of our own code.
+
+The following randomInteger function allows you to generate integers from min to max (excluding the max value).
+
+It provides a uniform distribution of random values (theoretically, the probability of drawing each integer from a given range should be the same).
+
+
+let randomInteger = (min, max) => {
+    let _min = Math.ceil(min);
+    let _max = Math.floor(max);
+    return Math.floor(Math.random() * (_max - _min) + _min);
+}
+console.log(randomInteger(10,20)); // -> ?
+
+If our function is to allow us to draw numbers from the same range of min and max, but this time allowing us to draw a max as well, we need to modify it slightly.
+
+
+let randomInteger = (min, max) => {
+    let _min = Math.ceil(min);
+    let _max = Math.floor(max);
+    return Math.floor(Math.random() * (_max - _min + 1) + _min);
+}
+console.log(randomInteger(10,20)); // -> ?
+
+3.3.7 Other useful methods
+The abs method returns an absolute value from the given number.
+
+
+console.log(Math.abs(-3.25)); // -> 3.25
+console.log(Math.abs(10)); // -> 10
+
+The min and max methods, as you can guess, are used to search for the smallest or the largest value among the given values.
+
+
+Note that in the example for the max method we used the spread operator to transform the array into individual elements which will be treated as arguments.
+
+
+console.log(Math.min(100, 20, 300, 10, 400));
+let numbers = [100, 20, 300, 10, 400];
+console.log(Math.max(...numbers));
+
+We also have at our disposal, among others, the pow and sqrt methods (i.e. power and square root) and log, log2, and log10 (i.e. natural logarithm, logarithm at base 2, and decimal logarithm).
+
+Look at the code below:
+
+
+Console.log(Math.pow(2, 3)); // -> 8 => 23
+console.log(Math.pow(4, 2)); // -> 16 => 42
+console.log(Math.pow(4, -1)); // -> 0.25 => 4-1 = 1/4^1 
+console.log(Math.pow(4, -2)); // -> 0.0625 => 4-2 = 1/4^2 
+console.log(Math.pow(4, 0.5)); // -> 2 => 40.5 = 4^(1/2) = √(2&4)
+console.log(Math.pow(-1,0.5)); // -> NaN => -10.5 = √(2&-1)
+console.log(Math.sqrt(4)); // -> 2
+x = Math.pow(Math.E, 2); // -> 7.3890560989306495
+console.log(Math.log(x)); // -> 2
+console.log(Math.log2(16)); // -> 4
+console.log(Math.log10(1000)); // -> 3
+Trigonometric functions are also represented in large numbers (eg. Sin, cos, atan, cosh).
+
+You must remember that in JavaScript, they don’t operate on degrees, but on radians.
+
+Look at the code below:
+
+
+console.log(Math.cos(Math.PI/3));
+console.log(Math.tan(Math.PI/4));
+console.log(Math.asin(1));
+
+The methods presented do not exhaust what is available in the Math object. Our goal is only to briefly familiarize you with the most popular.
+
+Remember what we mentioned while discussing the Number constructor – the JavaScript language was not invented for complex mathematical calculations.
+
+So don’t expect to use it to make serious scientific analyses.
+
+3.3.8 RegExp
+The RegExp constructor is used to create objects representing regular expressions. The constructor itself is not particularly complicated.
+
+Unfortunately, the same cannot be said about regular expressions.
+
+At this stage, we will look only at a few basic methods of this constructor and the methods of String constructor, which also work with regular expressions.
+
+As far as the regular expressions are concerned, we will only present the minimum knowledge you need, since discussing them in detail could take up the whole course.
+
+
+In a nutshell, a regular expression is a search pattern expressed in letters and metacharacters.
+
+This expression allows you to test the given string by checking whether it matches the pattern (most often it is about checking whether the pattern is included in the tested string).
+
+Regular expressions are used in virtually all programming languages where they are supported either natively or through external libraries.
+
+Among other things, they are commonly used to validate text data that apps get from unreliable sources (e.g. the email address provided by the user).
+
+In the simplest case, a regular expression can consist of the literals themselves (e.g. "cut").
+
+They can be used to check if there is such a substring in a given string.
+
+The use of such a regular expression for the string "haircut" would be successful ("cut" is included in "haircut").
+
+However, such an expression would be of little use. The simplest modification you can make to a regular expression is to replace the literal with a dot.
+
+The dot is a metacharacter, which can be replaced by any letter in a tested string.
+
+
+For example, the regular expression "c.t" matches both "haircut" and "caterpillar".
+
+3.3.9 Constructor and test method
+We can create a regular expression in JavaScript in two ways, either explicitly using the RegExp constructor, or using a shortened notation of literals and / (slash characters).
+
+In both cases, we have to provide the regular expression pattern as an argument.
+
+The simplest prototype method of the RegExp constructor is test, where we pass the tested string.
+
+If the string matches the expression (the pattern) the method will return true.
+
+Look at the code below:
+
+
+let re1 = new RegExp('c.t');
+let re2 = /c.t/;
+console.log(re1.test("cat")); // -> true
+console.log(re2.test("cut")); // -> true
+console.log(re2.test("ct")); // -> false
+
+3.3.10 The exec method
+An alternative method to test is exec.
+
+This method also checks the matching of the string (provided as an argument) to a regular expression, but returns more extensive information.
+
+If there is no match, it returns a null value, but if the match is successful, we get an array with some data.
+
+For us, the first two items of the array will be the most important: the snippet of the string from the argument that was matched to the pattern and the index of the first character of this snippet.
+
+Look at the code below:
+
+
+let re = /c.t/;
+console.log(re.exec("haircut")); // -> ["cut", index: 4, input: "haircut", groups: undefined]
+console.log(re.exec("ct")); // -> null
+
+3.3.11 String constructor methods using RegExp
+We mentioned earlier that some of the String constructor methods also support regular expressions.
+
+These include search, match, and replace.
+
+To the first two methods, search and match, we pass one argument – a regular expression (an object created with regExp, not a pattern of strings).
+
+If this is successful, the search method returns the matching position in the string, while from the match method we get information in the same form as from the exec method (an information array).
+
+The replace method allows us to change the indicated substring in our strings to a new value.
+
+Instead of a substring we can provide a regular expression (remember that operations on the string do not modify the original, but return a copy).
+
+Look at the code below:
+
+
+// String -> match, search, replace, ...
+let re = /c.t/;
+let str = "dog and cat";
+console.log(str.match(re)); // -> ["cat", index: 8, input: "dog and cat", groups: undefined]
+console.log(str.search(re)); // -> 8
+console.log(str.replace(re, 'unicorn')); // -> dog and unicorn
+console.log(str); // -> dog and cat
+
+3.3.12 Basic rules for regular expressions
+Overall, these are important methods related to regular expressions.
+
+However, in order to use them logically, we need to learn a basic set of metacharacters and rules used in regular expressions.
+
+
+The basic metacharacter is a dot.
+
+One arbitrary mark can be matched in its place. But what should we do if we really want to match the text containing the dot?
+
+In this instance, we use the escape character, which is \ (backslash).
+
+Preceding the metacharacter with an escape character means that we take away its magical properties, and it is to be treated as a literal (i.e. an ordinary character).
+
+Look at the code below:
+
+
+let re = /c\.t/;
+console.log(re.exec("cut")); // -> null
+console.log(re.exec("c.t")); // -> ["c.t", index: 0, input: "c.t", groups: undefined]
+
+Other metacharacters are * (asterisk), + (plus) and ? (question mark).
+
+They indicate how many times in a row the preceding character (literal or metacharacter) can occur.
+
+The + character means that it may occur once or more times, the * character is zero or more times, and the ? character zero or exactly once:
+
+
+let re1 = /o*ps/;
+console.log(re1.exec("ps")); // -> ["ps", index: 0, input: "ps", groups: undefined]
+console.log(re1.exec("ops")); // -> ["ops", index: 0, input: "ops", groups: undefined]
+console.log(re1.exec("He said: ooops!")); // -> ["ooops", index: 9, input: "He said: ooops!", groups: undefined]
+let re2 = /o+ps/;
+console.log(re2.exec("ps")); // -> null
+console.log(re2.exec("ops")); // -> ["ops", index: 0, input: "ops", groups: undefined]
+console.log(re2.exec("He said: ooops!")); // -> ["ooops", index: 9, input: "He said: ooops!", groups: undefined]
+let re3 = /o?ps/;  /// strange, isnt it?
+console.log(re3.exec("ps")); // -> ["ps", index: 0, input: "ps", groups: undefined]
+console.log(re3.exec("ops")); // -> ["ops", index: 0, input: "ops", groups: undefined]
+console.log(re3.exec("He said: ooops!")); // -> ["ooops", index: 9, input: "He said: ooops!", groups: undefined]
+
+The metacharacter | (vertical bar) is treated as an alternative.
+
+It separates two strings of characters, one of which must appear in the tested string.
+
+If the alternative only applies to the selected group of pattern characters, we will mark it using parentheses.
+
+Look at the code below:
+
+
+let re1 = /ca|ut/;
+console.log(re1.exec("cattle")); // -> ["ca", index: 0, input: "cattle", groups: undefined]
+console.log(re1.exec("haircut")); // -> ["ut", index: 5, input: "haircut", groups: undefined]
+console.log(re1.exec("city")); // -> null
+let re1 = /c(a|u)t/;
+console.log(re1.exec("cattle")); // -> ["cat", "a", index: 0, input: "cattle", groups: undefined]
+console.log(re1.exec("haircut")); // -> ["cut", "u", index: 4, input: "haircut", groups: undefined]
+console.log(re1.exec("city")); // -> null
+
+The use of a curly bracket makes it possible to enter the exact number of repetitions of the preceding character (literal or metacharacter).
+
+In the following example, we will use one more metacharacter to indicate a whitespace (which can be replaced by a space, tabulation, new line, etc.).
+
+This metacharacter is \s.
+
+The backslash at the beginning is an integral part of this metacharacter.
+
+Look at the code below:
+
+
+let re = /\so{2,3}ps/; // repeats 'o' two or three times 
+console.log(re.exec("He said: ops!")); // -> null
+console.log(re.exec("He said: ooops!")); // -> ["ooops", index: 9, input: "He said: ooops!", groups: undefined]
+console.log(re.exec("He said: ooooooooops!")); // -> null
+
+If at a specific position of the pattern you want to match exactly one literal from a certain limited set, insert a set of these literals enclosed by square brackets in this position.
+
+Thus, at the position where the square bracket is located, exactly one letter from among those mentioned in brackets must be matched.
+
+At the beginning of the set, you can insert the ^ (caret) metacharacter.
+
+This will mean that any character that is not included in the set may appear in that position.
+
+Look at the code below:
+
+
+let re1 = /c[aiu]t/;
+console.log(re1.exec("cattle")); // -> ["cat", index: 0, input: "cattle", groups: undefined]
+console.log(re1.exec("haircut")); // -> ["cut", index: 4, input: "haircut", groups: undefined]
+console.log(re1.exec("city")); // -> ["cit", index: 0, input: "city", groups: undefined]
+let re2 = /c[^au]t/;
+console.log(re2.exec("cattle")); // -> null
+console.log(re2.exec("haircut")); // -> null
+console.log(re2.exec("city")); // -> ["cit", index: 0, input: "city", groups: undefined]
+
+The appearance of the \d metacharacter means that any number can be matched at this position.
+
+Look at the code below:
+
+
+let re = /id\d+/;
+console.log(re.exec("My ids.")); // -> null
+console.log(re.exec("id60001")); // -> ["id60001", index: 0, input: "id60001", groups: undefined]
+
+The last important metacharacters are ^ (caret) and $ (dollar sign).
+
+They indicate the beginning and end of a string.
+
+Note that the caret used inside the square brackets, which denote a set of literals, has a completely different meaning.
+
+Look at the code below:
+
+
+let re1 = /^(abc\s){3}$/;
+console.log(re1.exec("abc abc abc ")); // -> ["abc abc abc ", "abc ", index: 0, input: "abc abc abc ", groups: undefined]
+console.log(re1.exec("abc abc abc abc ")); // -> null
+console.log(re1.exec("abc abcabc")); // -> null
+
+---
+
+3.4 Section 4 – Extending built-in types
+Scroll to begin 
+
+3.4.1 Extending built-in types
+With built-in objects, even among the many methods they offer, we will not always find the one suitable for what we need.
+
+Very often we will have to create new functionalities for specific tasks.
+
+Let's imagine that while developing an application, we need to draw one element from a given array.
+
+The Array constructor obviously does not have such a method, so let’s try to solve the problem ourselves.
+
+To begin with, let's create a simple function which will return an element of the array, not a random one, but the one indicated by the index.
+
+If we give an index outside the scope of the array, the function will return undefined.
+
+
+let getItem = function(array, index) {
+    let retVal = undefined;
+    if(index > 0 && index < array.length) {
+        retVal = array[index];
+    }
+    return retVal;
+}
+let array = [10, 20, 80, 100];
+console.log(getItem(array, 2)); // -> 80
+
+The function works as expected, although it contains some redundant code.
+
+We can remove the if instruction by replacing it with a conditional operator:
+
+
+let getItem = function(array, index) {
+    return (index > 0 < index < array.length) ? array[index] : undefined;
+}
+
+Doesn't our code look simpler now? But is it necessary to check whether the index is within the range of the array elements?
+
+In our case, not necessarily, because referring to an element outside the array will return undefined anyway.
+
+Let’s simplify the function even more:
+
+
+let getItem = function(array, index) {
+    return array[index];
+}
+
+Let’s now create a function that will solve our main problem, that is, it will return a random element, not an indicated one.
+
+For this purpose we will use, among others, a piece of code to draw integers, which we have prepared ourselves while discussing the Math object.
+
+Of course, we can also omit the already unnecessary index parameter.
+
+Look at the code below:
+
+
+let getRandomItem = function (array) {
+    return array[Math.floor(Math.random() * array.length)];
+}
+let array = [10, 20, 80, 100];
+console.log(getRandomItem(array)); // -> ?
+console.log(getRandomItem(array)); // -> ?
+
+Everything works as it should.
+
+However, we have created a function not permanently linked to the array.
+
+Would it be possible to create the same functionality in the form of a method, extending the array object?
+
+It turns out we can.
+
+It is enough to make a slight improvement to the Array constructor, or more precisely, to its prototype.
+
+It may sound dangerous, but in its execution it is trivial (we discussed this technique in the chapter on objects).
+
+Let's try to change our function to the Array prototype method.
+
+Look at the code below:
+
+
+Array.prototype.getRandomItem = function() {
+    return this[Math.floor(Math.random() * this.length)];
+}
+console.log(array.getRandomItem()); // -> ?
+console.log(array.getRandomItem()); // -> ?
+
+We have added a new method, getRandomItem, to the prototype field of the Array constructor.
+
+It doesn’t accept any arguments, because the array on which we work is stored in the object.
+
+We have access to this object from inside the method using this.
+
+Therefore, we have succeeded and everything is working correctly!
+
+
+The change in the Array constructor that we just made is, of course, only applicable to our application, and only until it is restarted.
+
+In the same way, we can modify other constructors by adding the necessary methods.
+
+This technique, with regard to built-in objects, has as many supporters as opponents.
+
+Its main disadvantage is that JavaScript is constantly changing, and we can’t be sure that over time, the method we have introduced ourselves won’t appear in the modified constructor.

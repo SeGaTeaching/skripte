@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <title>WebDev Lernportal</title>
+  <style>
+    body { font-family: sans-serif; margin: 2rem; }
+    .card { border: 1px solid #ccc; padding: 1rem; margin: 1rem 0; border-radius: 8px; }
+    .highlight { background-color: #f0f8ff; }
+    .hidden { display: none; }
+    .btn { padding: 0.5rem 1rem; margin-top: 0.5rem; cursor: pointer; }
+  </style>
+</head>
+<body>
+  <h1 id="main-title">Willkommen im Lernportal</h1>
+  <p class="lead">Hier lernst du DOM-Manipulation mit JavaScript.</p>
+
+  <nav>
+    <ul id="nav">
+      <li><a href="#kurs1" class="nav-link">Kurs 1</a></li>
+      <li><a href="#kurs2" class="nav-link">Kurs 2</a></li>
+    </ul>
+  </nav>
+
+  <section id="kurse">
+    <div class="card" id="kurs1">
+      <h2 class="title">HTML & CSS Grundlagen</h2>
+      <p>Einführung in Struktur und Gestaltung von Webseiten.</p>
+      <button class="btn info-btn">Mehr Infos</button>
+    </div>
+
+    <div class="card highlight" id="kurs2">
+      <h2 class="title">JavaScript für Einsteiger</h2>
+      <p>Lerne, wie du Webseiten interaktiv gestaltest.</p>
+      <button class="btn info-btn">Mehr Infos</button>
+    </div>
+  </section>
+
+  <div id="info-box" class="hidden">
+    <h3>Zusätzliche Kursinformationen</h3>
+    <p>Hier erscheinen Details zum gewählten Kurs.</p>
+  </div>
+
+  <form id="anmeldung">
+    <h3>Kursanmeldung</h3>
+    <label for="name">Name:</label>
+    <input type="text" id="name" name="name" required><br><br>
+
+    <label for="kurswahl">Kurs wählen:</label>
+    <select id="kurswahl" name="kurswahl">
+      <option value="html">HTML & CSS</option>
+      <option value="js">JavaScript</option>
+    </select><br><br>
+
+    <input type="submit" value="Jetzt anmelden" class="btn">
+  </form>
+
+  <script>
+    // --- Zugriff auf Elemente (Kapitel 2) ---
+    const title = document.getElementById("main-title");
+    const lead = document.querySelector(".lead");
+    const links = document.querySelectorAll(".nav-link");
+    const cards = document.getElementsByClassName("card");
+
+    // --- Lesen & Schreiben (Kapitel 4) ---
+    title.textContent = "DOM-Lernportal für WebDev";
+    lead.innerHTML += " <strong>Mach dich bereit!</strong>";
+
+    // --- Attribute & Properties (Kapitel 5 + 5b) ---
+    const kurswahl = document.getElementById("kurswahl");
+    console.log(kurswahl.getAttribute("name"));
+    console.log(kurswahl.name); // Property
+
+    // --- classList und Styles (Kapitel 6) ---
+    const infoBox = document.getElementById("info-box");
+    const infoButtons = document.querySelectorAll(".info-btn");
+
+    infoButtons.forEach(btn => {
+      btn.addEventListener("click", function() {
+        infoBox.classList.toggle("hidden");
+        infoBox.style.border = "2px dashed orange";
+        infoBox.querySelector("p").textContent = `Infos zu: ${this.closest(".card").querySelector(".title").textContent}`;
+      });
+    });
+
+    // --- Navigation im DOM (Kapitel 3 + 9) ---
+    for (let link of links) {
+      link.addEventListener("mouseover", function() {
+        this.style.color = "blue";
+      });
+      link.addEventListener("mouseout", function() {
+        this.style.color = "";
+      });
+    }
+
+    // --- Formular-Handling (Kapitel 11) ---
+    const form = document.getElementById("anmeldung");
+    form.addEventListener("submit", function(e) {
+      e.preventDefault();
+      const name = form.elements.name.value;
+      const kurs = kurswahl.value;
+      alert(`Anmeldung erfolgreich! Name: ${name}, Kurs: ${kurs}`);
+    });
+  </script>
+</body>
+</html>
